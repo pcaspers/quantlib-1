@@ -339,7 +339,7 @@ namespace QuantLib {
                     }
                 }
                 Real eta =  coupon->accrualPeriod() / (tend - tstart);
-                defaultAccrualNpv += -defaultAccrThisNode * 
+                defaultAccrualNpv += defaultAccrThisNode * 
 					coupon->amount() * eta;
 			}
         }
