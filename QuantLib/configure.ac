@@ -55,6 +55,7 @@ fi
 # Continue setup
 
 AC_PROG_CC
+CXXFLAGS="$CXXFLAGS -std=c++0x"
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_LIBTOOL
