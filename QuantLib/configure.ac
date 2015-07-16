@@ -409,6 +409,7 @@ AC_CONFIG_FILES([
     Docs/Makefile
     Examples/Makefile
     Examples/AdjointSwapDeltas/Makefile
+    Examples/AdjointGsr/Makefile
     Examples/BasketLosses/Makefile
     Examples/BermudanSwaption/Makefile
     Examples/Bonds/Makefile
