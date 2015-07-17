@@ -39,20 +39,21 @@ namespace QLFCT {
 	inline const adouble max(const adouble& x, const adouble& y) { return QLFCT::CondExpGt(x, y, x, y); }
 	inline const adouble min(const adouble& x, const adouble& y) { return QLFCT::CondExpLt(x, y, x, y); }
     inline const adouble abs(const adouble& x) { return x > adouble(0.0) ? x : -x; }
-    inline const adouble sqrt(const adouble& x) { return sqrt(x); }
-    inline const adouble exp(const adouble& x) { return exp(x); }
-    inline const adouble log(const adouble& x) { return log(x); }
-    inline const adouble pow(const adouble& x, const adouble& y) { return pow(x,y); }
-    inline const adouble sin(const adouble& x) { return sin(x); }
-    inline const adouble cos(const adouble& x) { return cos(x); }
-    inline const adouble tan(const adouble& x) { return tan(x); }
-    inline const adouble sinh(const adouble& x) { return sinh(x); }
-    inline const adouble cosh(const adouble& x) { return cosh(x); }
-    inline const adouble tanh(const adouble& x) { return tanh(x); }
-    inline const adouble asin(const adouble& x) { return asin(x); }
-    inline const adouble acos(const adouble& x) { return acos(x); }
-    inline const adouble atan(const adouble& x) { return atan(x); }
-    inline const adouble erf(const adouble& x) { return erf(x); }
+
+    inline const adouble sqrt(const adouble& x) { return ::sqrt(x); }
+    inline const adouble exp(const adouble& x) { return ::exp(x); }
+    inline const adouble log(const adouble& x) { return ::log(x); }
+    inline const adouble pow(const adouble& x, const adouble& y) { return ::pow(x,y); }
+    inline const adouble sin(const adouble& x) { return ::sin(x); }
+    inline const adouble cos(const adouble& x) { return ::cos(x); }
+    inline const adouble tan(const adouble& x) { return ::tan(x); }
+    inline const adouble sinh(const adouble& x) { return ::sinh(x); }
+    inline const adouble cosh(const adouble& x) { return ::cosh(x); }
+    inline const adouble tanh(const adouble& x) { return ::tanh(x); }
+    inline const adouble asin(const adouble& x) { return ::asin(x); }
+    inline const adouble acos(const adouble& x) { return ::acos(x); }
+    inline const adouble atan(const adouble& x) { return ::atan(x); }
+    inline const adouble erf(const adouble& x) { return ::erf(x); }
 
 }
 
