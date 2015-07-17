@@ -111,7 +111,7 @@ template <class T> void Gaussian1dSwaptionEngine_t<T>::calculate() const {
     Array_t<T> p(z.size(), 0.0);
 
     Date expiry1 = Null<Date>(), expiry0;
-    Time expiry1Time = Null<T>(), expiry0Time;
+    Time expiry1Time = Null<Time>(), expiry0Time;
 
     do {
 
