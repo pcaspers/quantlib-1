@@ -24,6 +24,9 @@ class Timer {
 
 int main() {
 
+// only CPPAD supported so far
+#ifdef QLCPPAD
+
     try {
 
     // some typedefs to keep notation simple
@@ -349,6 +352,8 @@ int main() {
     } catch(std::exception e) {
         std::cout << e.what() << std::endl;
     }
+
+#endif
 
     return 0;
 }
