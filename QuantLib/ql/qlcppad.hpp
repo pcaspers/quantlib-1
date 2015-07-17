@@ -31,12 +31,12 @@
 
 namespace CppAD {
 
-template <class T>
+template <class T> inline
 const T max(const  T& x, const T& y) {
     return CppAD::CondExpGt(x, y, x, y);
 }
 
-template <class T>
+template <class T> inline
 const T min(const T& x, const T& y) {
     return CppAD::CondExpLt(x, y, x, y);
 }
