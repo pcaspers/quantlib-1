@@ -145,9 +145,12 @@ T SmileSection_t<T>::optionPrice(T strike, Option::Type type,
                "smile section must provide atm level to compute option price");
     // for zero strike, return option price even if outside
     // minstrike, maxstrike interval
-    return blackFormula(
-        type, strike, atm,
-        fabs(strike) < QL_EPSILON ? 0.2 : sqrt(variance(strike)), discount);
+    T tmp;
+    if (fabs(strike) < QL_EPSILON)
+        tmp = 0.2;
+    else
+        tmp = QLFCT::sqrt(T(variance(strike)));
+    return blackFormula(type, strike, atm, tmp, discount);
 }
 
 template <class T>
@@ -173,10 +176,11 @@ template <class T> T SmileSection_t<T>::vega(T strike, T discount) const {
     T atm = atmLevel();
     QL_REQUIRE(atm != Null<T>(),
                "smile section must provide atm level to compute option price");
-    return blackFormulaVolDerivative(strike, atm, sqrt(variance(strike)),
+    return blackFormulaVolDerivative(strike, atm, QLFCT::sqrt(T(variance(strike))),
                                      exerciseTime(), discount) *
            0.01;
 }
+
 }
 
 #endif

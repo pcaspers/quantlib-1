@@ -24,34 +24,35 @@
 #ifndef ql_adolc_hpp
 #define ql_adolc_hpp
 
-//#define QL_NO_UBLAS_SUPPORT  
+// currently errors are thrown, to be investigated
+#define QL_NO_UBLAS_SUPPORT
 
 #include <adolc/adolc.h>
 
 namespace QLFCT {
 
-	template<class T> inline const T CondExpLt(const T& x, const T& y, const T& a, const T& b) { return x < y ? a : b; }
-	template<class T> inline const T CondExpLe(const T& x, const T& y, const T& a, const T& b) { return x <= y ? a : b; }
-	template<class T> inline const T CondExpGt(const T& x, const T& y, const T& a, const T& b) { return x > y ? a : b; }
-	template<class T> inline const T CondExpGe(const T& x, const T& y, const T& a, const T& b) { return x >= y ? a : b; }
-	template<class T> inline const T CondExpEq(const T& x, const T& y, const T& a, const T& b) { return x == y ? a : b; }
-	template<class T> inline const T max(const T& x, const T& y) { return QLFCT::CondExpGt(x, y, x, y); }
-	template<class T> inline const T min(const T& x, const T& y) { return QLFCT::CondExpLt(x, y, x, y); }
-    template<class T> inline const T abs(const T& x) { return x > T(0.0) ? x : -x; }
-    template<class T> inline const T sqrt(const T& x) { return sqrt(x); }
-    template<class T> inline const T exp(const T& x) { return exp(x); }
-    template<class T> inline const T log(const T& x) { return log(x); }
-    template<class T> inline const T pow(const T& x, const T& y) { return pow(x,y); }
-    template<class T> inline const T sin(const T& x) { return sin(x); }
-    template<class T> inline const T cos(const T& x) { return cos(x); }
-    template<class T> inline const T tan(const T& x) { return tan(x); }
-    template<class T> inline const T sinh(const T& x) { return sinh(x); }
-    template<class T> inline const T cosh(const T& x) { return cosh(x); }
-    template<class T> inline const T tanh(const T& x) { return tanh(x); }
-    template<class T> inline const T asin(const T& x) { return asin(x); }
-    template<class T> inline const T acos(const T& x) { return acos(x); }
-    template<class T> inline const T atan(const T& x) { return atan(x); }
-    template<class T> inline const T erf(const T& x) { return erf(x); }
+	inline const adouble CondExpLt(const adouble& x, const adouble& y, const adouble& a, const adouble& b) { return x < y ? a : b; }
+	inline const adouble CondExpLe(const adouble& x, const adouble& y, const adouble& a, const adouble& b) { return x <= y ? a : b; }
+	inline const adouble CondExpGt(const adouble& x, const adouble& y, const adouble& a, const adouble& b) { return x > y ? a : b; }
+	inline const adouble CondExpGe(const adouble& x, const adouble& y, const adouble& a, const adouble& b) { return x >= y ? a : b; }
+	inline const adouble CondExpEq(const adouble& x, const adouble& y, const adouble& a, const adouble& b) { return x == y ? a : b; }
+	inline const adouble max(const adouble& x, const adouble& y) { return QLFCT::CondExpGt(x, y, x, y); }
+	inline const adouble min(const adouble& x, const adouble& y) { return QLFCT::CondExpLt(x, y, x, y); }
+    inline const adouble abs(const adouble& x) { return x > adouble(0.0) ? x : -x; }
+    inline const adouble sqrt(const adouble& x) { return sqrt(x); }
+    inline const adouble exp(const adouble& x) { return exp(x); }
+    inline const adouble log(const adouble& x) { return log(x); }
+    inline const adouble pow(const adouble& x, const adouble& y) { return pow(x,y); }
+    inline const adouble sin(const adouble& x) { return sin(x); }
+    inline const adouble cos(const adouble& x) { return cos(x); }
+    inline const adouble tan(const adouble& x) { return tan(x); }
+    inline const adouble sinh(const adouble& x) { return sinh(x); }
+    inline const adouble cosh(const adouble& x) { return cosh(x); }
+    inline const adouble tanh(const adouble& x) { return tanh(x); }
+    inline const adouble asin(const adouble& x) { return asin(x); }
+    inline const adouble acos(const adouble& x) { return acos(x); }
+    inline const adouble atan(const adouble& x) { return atan(x); }
+    inline const adouble erf(const adouble& x) { return erf(x); }
 
 }
 

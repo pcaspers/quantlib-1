@@ -198,11 +198,12 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
         for (int l = 0; l <= k - 1; l++) {
             T res2 = 1.0;
             // alpha_l
-            res2 *= revZero(l)
-                        ? vol(l) * vol(l) * (time2(l + 1) - time2(l))
-                        : vol(l) * vol(l) / (2.0 * rev(l)) *
-                              (1.0 - QLFCT::exp(-2.0 * rev(l) *
-                                                (time2(l + 1) - time2(l))));
+            if (revZero(l))
+                res2 *= vol(l) * vol(l) * (time2(l + 1) - time2(l));
+            else
+                res2 *= vol(l) * vol(l) / (2.0 * rev(l)) *
+                        (1.0 -
+                         QLFCT::exp(-2.0 * rev(l) * (time2(l + 1) - time2(l))));
             // zeta_i (i>k)
             for (int i = k + 1; i <= upperIndex(t) - 1; i++)
                 res2 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -210,39 +211,40 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
             for (int j = l + 1; j <= k - 1; j++)
                 res2 *= QLFCT::exp(-2.0 * rev(j) * (time2(j + 1) - time2(j)));
             // zeta_k beta_k
-            res2 *=
-                revZero(k)
-                    ? 2.0 * time2(k) - flooredTime(k, w) -
-                          cappedTime(k + 1, t) -
-                          2.0 * (time2(k) - cappedTime(k + 1, t))
-                    : (QLFCT::exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
-                                            cappedTime(k + 1, t))) -
-                       QLFCT::exp(2.0 * rev(k) *
-                                  (time2(k) - cappedTime(k + 1, t)))) /
-                          rev(k);
+            if (revZero(k))
+                res2 *= 2.0 * time2(k) - flooredTime(k, w) -
+                        cappedTime(k + 1, t) -
+                        2.0 * (time2(k) - cappedTime(k + 1, t));
+            else
+                res2 *=
+                    (QLFCT::exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
+                                          cappedTime(k + 1, t))) -
+                     QLFCT::exp(2.0 * rev(k) *
+                                (time2(k) - cappedTime(k + 1, t)))) /
+                    rev(k);
             // add to sum
             res += res2;
         }
         // l=k
         T res2 = 1.0;
         // alpha_k zeta_k
-        res2 *=
-            revZero(k)
-                ? vol(k) * vol(k) / 4.0 *
-                      (4.0 * QLFCT::pow(cappedTime(k + 1, t) - time2(k), 2.0) -
-                       (QLFCT::pow(flooredTime(k, w) - 2.0 * time2(k) +
-                                       cappedTime(k + 1, t),
-                                   2.0) +
-                        QLFCT::pow(cappedTime(k + 1, t) - flooredTime(k, w),
-                                   2.0)))
-                : vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
-                      (QLFCT::exp(-2.0 * rev(k) *
-                                  (cappedTime(k + 1, t) - time2(k))) +
-                       1.0 - (QLFCT::exp(-rev(k) *
-                                         (flooredTime(k, w) - 2.0 * time2(k) +
-                                          cappedTime(k + 1, t))) +
-                              QLFCT::exp(-rev(k) * (cappedTime(k + 1, t) -
-                                                    flooredTime(k, w)))));
+        if (revZero(k))
+            res2 *=
+                vol(k) * vol(k) / 4.0 *
+                (4.0 * QLFCT::pow(cappedTime(k + 1, t) - time2(k), 2.0) -
+                 (QLFCT::pow(flooredTime(k, w) - 2.0 * time2(k) +
+                                 cappedTime(k + 1, t),
+                             2.0) +
+                  QLFCT::pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0)));
+        else
+            res2 *=
+                vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
+                (QLFCT::exp(-2.0 * rev(k) * (cappedTime(k + 1, t) - time2(k))) +
+                 1.0 -
+                 (QLFCT::exp(-rev(k) * (flooredTime(k, w) - 2.0 * time2(k) +
+                                        cappedTime(k + 1, t))) +
+                  QLFCT::exp(-rev(k) *
+                             (cappedTime(k + 1, t) - flooredTime(k, w)))));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++)
             res2 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -257,11 +259,12 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
         for (int l = k + 1; l <= upperIndex(T0) - 1; l++) {
             T res3 = 1.0;
             // eta_l
-            res3 *= revZero(l)
-                        ? cappedTime(l + 1, T0) - time2(l)
-                        : (1.0 - QLFCT::exp(-rev(l) * (cappedTime(l + 1, T0) -
-                                                       time2(l)))) /
-                              rev(l);
+            if (revZero(l))
+                res3 *= cappedTime(l + 1, T0) - time2(l);
+            else
+                res3 *= (1.0 - QLFCT::exp(-rev(l) *
+                                          (cappedTime(l + 1, T0) - time2(l)))) /
+                        rev(l);
             // zeta_i (i>k)
             for (int i = k + 1; i <= upperIndex(t) - 1; i++)
                 res3 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -269,41 +272,43 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
             for (int j = k + 1; j <= l - 1; j++)
                 res3 *= QLFCT::exp(-rev(j) * (time2(j + 1) - time2(j)));
             // zeta_k gamma_k
-            res3 *= revZero(k)
-                        ? (cappedTime(k + 1, t) - time2(k + 1) -
-                           (2.0 * flooredTime(k, w) - cappedTime(k + 1, t) -
-                            time2(k + 1))) /
-                              2.0
-                        : (QLFCT::exp(rev(k) *
-                                      (cappedTime(k + 1, t) - time2(k + 1))) -
-                           QLFCT::exp(rev(k) *
-                                      (2.0 * flooredTime(k, w) -
-                                       cappedTime(k + 1, t) - time2(k + 1)))) /
-                              (2.0 * rev(k));
+            if (revZero(k))
+                res3 *= (cappedTime(k + 1, t) - time2(k + 1) -
+                         (2.0 * flooredTime(k, w) - cappedTime(k + 1, t) -
+                          time2(k + 1))) /
+                        2.0;
+            else
+                res3 *= (QLFCT::exp(rev(k) *
+                                    (cappedTime(k + 1, t) - time2(k + 1))) -
+                         QLFCT::exp(rev(k) *
+                                    (2.0 * flooredTime(k, w) -
+                                     cappedTime(k + 1, t) - time2(k + 1)))) /
+                        (2.0 * rev(k));
             // add to sum
             res2 += res3;
         }
         // l=k
         T res3 = 1.0;
         // eta_k zeta_k
-        res3 *=
-            revZero(k)
-                ? (-QLFCT::pow(cappedTime(k + 1, t) - cappedTime(k + 1, T0),
-                               2.0) -
-                   2.0 * QLFCT::pow(cappedTime(k + 1, t) - flooredTime(k, w),
-                                    2.0) +
-                   QLFCT::pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T0) -
-                                  cappedTime(k + 1, t),
-                              2.0)) /
-                      4.0
-                : (2.0 - QLFCT::exp(rev(k) * (cappedTime(k + 1, t) -
-                                              cappedTime(k + 1, T0))) -
-                   (2.0 * QLFCT::exp(-rev(k) * (cappedTime(k + 1, t) -
-                                                flooredTime(k, w))) -
-                    QLFCT::exp(rev(k) * (2.0 * flooredTime(k, w) -
-                                         cappedTime(k + 1, T0) -
-                                         cappedTime(k + 1, t))))) /
-                      (2.0 * rev(k) * rev(k));
+        if (revZero(k))
+            res3 *=
+                (-QLFCT::pow(cappedTime(k + 1, t) - cappedTime(k + 1, T0),
+                             2.0) -
+                 2.0 *
+                     QLFCT::pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0) +
+                 QLFCT::pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T0) -
+                                cappedTime(k + 1, t),
+                            2.0)) /
+                4.0;
+        else
+            res3 *= (2.0 - QLFCT::exp(rev(k) * (cappedTime(k + 1, t) -
+                                                cappedTime(k + 1, T0))) -
+                     (2.0 * QLFCT::exp(-rev(k) * (cappedTime(k + 1, t) -
+                                                  flooredTime(k, w))) -
+                      QLFCT::exp(rev(k) * (2.0 * flooredTime(k, w) -
+                                           cappedTime(k + 1, T0) -
+                                           cappedTime(k + 1, t))))) /
+                    (2.0 * rev(k) * rev(k));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++)
             res3 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
@@ -340,12 +345,12 @@ template <class T> T GsrProcess_t<T>::variance(Time w, T, Time dt) const {
     for (int k = lowerIndex(w); k <= upperIndex(t) - 1; k++) {
         T res2 = vol(k) * vol(k);
         // zeta_k^2
-        res2 *=
-            revZero(k)
-                ? -(flooredTime(k, w) - cappedTime(k + 1, t))
-                : (1.0 - QLFCT::exp(2.0 * rev(k) * (flooredTime(k, w) -
-                                                    cappedTime(k + 1, t)))) /
-                      (2.0 * rev(k));
+        if (revZero(k))
+            res2 *= -(flooredTime(k, w) - cappedTime(k + 1, t));
+        else
+            res2 *= (1.0 - QLFCT::exp(2.0 * rev(k) * (flooredTime(k, w) -
+                                                      cappedTime(k + 1, t)))) /
+                    (2.0 * rev(k));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
             res2 *=
@@ -419,10 +424,11 @@ template <class T> T GsrProcess_t<T>::G(Time t, Time w, T) const {
         for (int j = lowerIndex(t); j <= i - 1; j++) {
             res2 *= QLFCT::exp(-rev(j) * (time2(j + 1) - flooredTime(j, t)));
         }
-        res2 *= revZero(i) ? cappedTime(i + 1, w) - flooredTime(i, t)
-                           : (1.0 - QLFCT::exp(-rev(i) * (cappedTime(i + 1, w) -
-                                                          flooredTime(i, t)))) /
-                                 rev(i);
+        if (revZero(i))
+            res2 *= cappedTime(i + 1, w) - flooredTime(i, t);
+        res2 *= (1.0 - QLFCT::exp(-rev(i) *
+                                  (cappedTime(i + 1, w) - flooredTime(i, t)))) /
+                rev(i);
         res += res2;
     }
 

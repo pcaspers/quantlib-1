@@ -165,9 +165,6 @@
 // adolc support
 #define QLADOLC
 
-// no AD support
-//#define QLNOAD
-
 #ifdef QLCPPAD
 #include <ql/qlcppad.hpp>
 #endif
@@ -176,7 +173,7 @@
 #include <ql/qladolc.hpp>
 #endif
 
-#ifdef QLNOAD
+#if !defined(CPPAD)
 namespace QLFCT {
 	using std::pow; using std::log;
 	using std::exp; using std::abs; using std::sqrt;

@@ -28,60 +28,51 @@
 
 #include <ql/types.hpp>
 
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#if defined(__GNUC__) &&                                                       \
+    (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
 #include <boost/type_traits.hpp>
 
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#if defined(__GNUC__) &&                                                       \
+    (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
 
 namespace QuantLib {
 
-    //! template class providing a null value for a given type.
-    template <class Type>
-    class Null;
+//! template class providing a null value for a given type.
+template <class Type> class Null;
 
+namespace detail {
 
-    namespace detail {
+template <bool> struct FloatingPointNull;
 
-        template <bool>
-        struct FloatingPointNull;
+// null value for floating-point types
+template <> struct FloatingPointNull<true> {
+    static float nullValue() { return QL_NULL_REAL; }
+};
 
-        // null value for floating-point types
-        template <>
-        struct FloatingPointNull<true> {
-            static float nullValue() {
-                return QL_NULL_REAL;
-            }
-        };
+// null value for integer types
+template <> struct FloatingPointNull<false> {
+    static int nullValue() { return QL_NULL_INTEGER; }
+};
+}
 
-        // null value for integer types
-        template <>
-        struct FloatingPointNull<false> {
-            static int nullValue() {
-                return QL_NULL_INTEGER;
-            }
-        };
-
+// default implementation for built-in types
+template <typename T> class Null {
+  public:
+    Null() {}
+    operator T() const {
+        return T(detail::FloatingPointNull<
+                 boost::is_floating_point<T>::value>::nullValue());
     }
-
-    // default implementation for built-in types
-    template <typename T>
-    class Null {
-      public:
-        Null() {}
-        operator T() const {
-            return T(detail::FloatingPointNull<
-                         boost::is_floating_point<T>::value>::nullValue());
-        }
-    };
+};
 
 #ifdef QLCPPAD
-	template <class Base> class Null<CppAD::AD<Base> > {
+template <class Base> class Null<CppAD::AD<Base> > {
   public:
     Null() {}
     operator CppAD::AD<Base>() const {
@@ -97,7 +88,13 @@ namespace QuantLib {
 };
 #endif
 
+#ifdef QLADOLC
+template <> class Null<adouble> {
+  public:
+    Null() {}
+    operator adouble() const { return adouble(QL_NULL_REAL); }
+};
+#endif
 }
-
 
 #endif

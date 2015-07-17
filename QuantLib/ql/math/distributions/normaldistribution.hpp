@@ -102,7 +102,7 @@ template <class T> T CumulativeNormalDistribution_t<T>::operator()(T z) const {
             a = g * (x - y);
             sum -= a;
             g *= y;
-            i+=1.0;
+            i += 1.0;
             a = QLFCT::abs(a);
         } while (lasta > a && a >= QLFCT::abs(sum * QL_EPSILON));
         result = -gaussian_(z) / z * sum;
@@ -159,7 +159,8 @@ class InverseCumulativeNormal : public std::unary_function<Real, Real> {
 // #define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
 #ifdef REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
         // error (f_(z) - x) divided by the cumulative's derivative
-        const Real r = (f_(z) - x) * M_SQRT2 * M_SQRTPI * QLFCT::exp(0.5 * z * z);
+        const Real r =
+            (f_(z) - x) * M_SQRT2 * M_SQRTPI * QLFCT::exp(0.5 * z * z);
         //  Halley's method
         z -= r / (1 + 0.5 * z * r);
 #endif
@@ -305,8 +306,10 @@ template <class T> inline T NormalDistribution_t<T>::operator()(T x) const {
     T deltax = x - average_;
     T exponent = -(deltax * deltax) / denominator_;
     // debian alpha had some strange problem in the very-low range
-    return exponent <= -690.0 ? 0.0 : // exp(x) < 1.0e-300 anyway
-               normalizationFactor_ * QLFCT::exp(exponent);
+    if (exponent <= -690.0)
+        return 0.0; // exp(x) < 1.0e-300 anyway
+    else
+        return normalizationFactor_ * QLFCT::exp(exponent);
 }
 
 template <class T> inline T NormalDistribution_t<T>::derivative(T x) const {

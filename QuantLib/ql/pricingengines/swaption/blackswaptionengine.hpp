@@ -182,10 +182,10 @@ template <class T> void BlackSwaptionEngine_t<T>::calculate() const {
         blackFormula(w, strike, atmForward, stdDev, annuity, displacement_);
 
     Time exerciseTime = vol_->timeFromReference(exerciseDate);
-    this->results_.additionalResults["vega"] =
+    this->results_.additionalResults["vega"] = T(
         QLFCT::sqrt(exerciseTime) *
         blackFormulaStdDevDerivative(strike, atmForward, stdDev, annuity,
-                                     displacement_);
+                                     displacement_));
 }
 }
 

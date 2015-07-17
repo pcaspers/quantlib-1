@@ -144,7 +144,10 @@ FloatingRateCoupon_t<T>::pricer() const {
 
 template <class T>
 inline T FloatingRateCoupon_t<T>::convexityAdjustmentImpl(T fixing) const {
-    return (gearing() == 0.0 ? 0.0 : adjustedFixing() - fixing);
+    if (gearing() == 0.0)
+        return 0.0;
+    else
+        return adjustedFixing() - fixing;
 }
 
 template <class T>
@@ -215,7 +218,8 @@ template <class T> Date FloatingRateCoupon_t<T>::fixingDate() const {
 template <class T> T FloatingRateCoupon_t<T>::rate() const {
     QL_REQUIRE(pricer_, "pricer not set");
     pricer_->initialize(*this);
-    return pricer_->swapletRate();
+    T tmp = pricer_->swapletRate();
+    return tmp;
 }
 
 template <class T>

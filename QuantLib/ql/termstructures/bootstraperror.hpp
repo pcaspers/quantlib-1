@@ -65,7 +65,8 @@ namespace QuantLib {
     T BootstrapError<Curve,T>::operator()(T guess) const {
         Traits::updateGuess(curve_->data_, guess, segment_);
         curve_->interpolation_.update();
-        return helper_->quoteError();
+        T tmp = helper_->quoteError();
+        return tmp;
     }
     #endif
 

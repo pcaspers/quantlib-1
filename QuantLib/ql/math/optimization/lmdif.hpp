@@ -551,7 +551,7 @@ void qrfac(int m, int n, T *a, int, int pivot, int *ipvt, int, T *rdiag,
                 }
                 if ((pivot != 0) && (rdiag[k] != zero)) {
                     temp = a[j + m * k] / rdiag[k];
-                    temp = dmax1(zero, one - temp * temp);
+                    temp = dmax1(zero, T(one - temp * temp));
                     rdiag[k] *= QLFCT::sqrt(temp);
                     temp = rdiag[k] / wa[k];
                     if ((p05 * temp * temp) <= T(MACHEP)) {
@@ -1003,7 +1003,7 @@ L150:
     *    evaluate the function at the current value of par.
     */
     if (*par == zero)
-        *par = dmax1(T(DWARF), p001 * paru);
+        *par = dmax1(T(DWARF), T(p001 * paru));
     temp = QLFCT::sqrt(*par);
     for (j = 0; j < n; j++)
         wa1[j] = temp * diag[j];
@@ -1054,7 +1054,7 @@ L150:
     /*
     *    compute an improved estimate for par.
     */
-    *par = dmax1(parl, *par + parc);
+    *par = dmax1(parl, T(*par + parc));
     /*
     *    end of an iteration.
     */
@@ -1499,7 +1499,7 @@ L200:
             temp = p5 * dirder / (dirder + p5 * actred);
         if (((p1 * fnorm1) >= fnorm) || (temp < p1))
             temp = p1;
-        delta = temp * dmin1(delta, pnorm / p1);
+        delta = temp * dmin1(delta, T(pnorm / p1));
         par = par / temp;
     } else {
         if ((par == zero) || (ratio >= p75)) {
