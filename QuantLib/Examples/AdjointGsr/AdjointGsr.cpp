@@ -12,7 +12,12 @@ using namespace boost::assign;
 using namespace QuantLib;
 
 typedef Real dbl;
+#ifdef QLCPPAD
 typedef CppAD::AD<double> dblAD;
+#endif
+#ifdef QLADOLC
+typedef adouble dblAD;
+#endif
 
 class Timer {
     boost::timer timer_;
@@ -231,9 +236,9 @@ int main() {
         yts6mAD_h, stepDates, sigmasAD, reversion);
 
     boost::shared_ptr<PricingEngine> swaptionEngine =
-        boost::make_shared<Gaussian1dSwaptionEngine_t<dbl> >(gsr,32,5.0);
+        boost::make_shared<Gaussian1dSwaptionEngine_t<dbl> >(gsr, 32, 5.0);
     boost::shared_ptr<PricingEngine> swaptionEngineAD =
-        boost::make_shared<Gaussian1dSwaptionEngine_t<dblAD> >(gsrAD,32,5.0);
+        boost::make_shared<Gaussian1dSwaptionEngine_t<dblAD> >(gsrAD, 32, 5.0);
 
     // calibration basket
 
@@ -242,14 +247,27 @@ int main() {
 
     std::vector<boost::shared_ptr<CalibrationHelper_t<dbl> > > basket;
     std::vector<boost::shared_ptr<CalibrationHelper_t<dblAD> > > basketAD;
+
+#ifdef QLADOLC
+    int tag = 1, keep = 1;
+    trace_on(tag, keep);
+#endif
+
     for (Size i = 1; i < 10; ++i) {
         Period swapLength = (10 - i) * Years;
         inputVol[i - 1] =
             swvol->volatility(exerciseDates[i - 1], swapLength, strike);
+#ifdef QLCPPAD
         inputVolAD[i - 1] = inputVol[i - 1];
+#endif
+#ifdef QLADOLC
+        inputVolAD[i - 1] <<= inputVol[i - 1];
+#endif
     }
 
+#ifdef QLCPPAD
     CppAD::Independent(inputVolAD);
+#endif
 
     for (Size i = 1; i < 10; ++i) {
         Period swapLength = (10 - i) * Years;
@@ -283,7 +301,7 @@ int main() {
     timer.start();
     gsr->calibrateVolatilitiesIterative(basket, method, ec);
     timer.stop();
-    std::cout << "dbl model calibration timing = " << timer.elapsed()
+    std::cout << "plain model calibration timing = " << timer.elapsed()
               << std::endl;
 
     timer.start();
@@ -361,28 +379,43 @@ int main() {
 
     timer.start();
     swaption->setPricingEngine(swaptionEngine);
-    std::cout << "berm npv=" << swaption->NPV() << std::endl;
+    std::cout << "plain pricing bermudan npv =" << swaption->NPV() << std::endl;
     timer.stop();
-    std::cout << "plain pricing = " << timer.elapsed() << std::endl;
+    std::cout << "timing plain pricing = " << timer.elapsed() << std::endl;
 
     timer.start();
     swaptionAD->setPricingEngine(swaptionEngineAD);
     std::vector<dblAD> yAD(1, 0.0);
+#ifdef QLCPPAD
     yAD[0] = swaptionAD->NPV();
-    std::cout << "Bermudan NPV = " << std::setprecision(12) << yAD[0]
+#endif
+#ifdef ADOLC
+    double yout;
+    yAD[0] >>= yout;
+    trace_off();
+#endif
+    std::cout << "AD pricing bermudan npv = " << std::setprecision(12) << yAD[0]
               << std::endl;
     timer.stop();
-    std::cout << "AD pricing =" << timer.elapsed() << std::endl;
+    std::cout << "timing AD pricing =" << timer.elapsed() << std::endl;
 
     timer.start();
+#ifdef QLCPPAD
     CppAD::ADFun<Real> f(inputVolAD, yAD);
     // CppAD::ADFun<Real> f(sigmasAD, yAD);
     std::vector<Real> vega(sigmasAD.size()), w(1, 1.0);
     vega = f.Reverse(1, w);
     timer.stop();
-    std::cout << "AD Deltas: " << timer.elapsed() << std::endl;
+#endif
+#ifdef QLADOLC
+    double u[1];
+    u[0] = 1.0;
+    double vega[sigmasAD.size()];
+    reverse(tag, 1, sigmasAD.size(), 0, u, vega);
+#endif
+    std::cout << "timing AD reverse sweep: " << timer.elapsed() << std::endl;
 
-    for (Size i = 0; i < vega.size(); ++i)
+    for (Size i = 0; i < sigmasAD.size(); ++i)
         std::cout << "vega #" << i << " = " << vega[i] << std::endl;
 
     return 0;
