@@ -160,11 +160,23 @@
 #endif
 
 // cppad support
-#define QLCPPAD
+//#define QLCPPAD
+
+// adolc support
+#define QLADOLC
+
+// no AD support
+//#define QLNOAD
 
 #ifdef QLCPPAD
 #include <ql/qlcppad.hpp>
-#else
+#endif
+
+#ifdef QLADOLC
+#include <ql/qladolc.hpp>
+#endif
+
+#ifdef QLNOAD
 namespace QLFCT {
 	using std::pow; using std::log;
 	using std::exp; using std::abs; using std::sqrt;
@@ -173,13 +185,13 @@ namespace QLFCT {
     using std::sinh; using std::cosh; using std::tanh;
     using std::asinh; using std::acosh; using std::atanh; // not yet in cppad, c++11
     using std::erf; // c++11
-	template<class T> const T CondExpLt(const T& x, const T& y, const T& a, const T& b) { return x < y ? a : b; }
-	template<class T> const T CondExpLe(const T& x, const T& y, const T& a, const T& b) { return x <= y ? a : b; }
-	template<class T> const T CondExpGt(const T& x, const T& y, const T& a, const T& b) { return x > y ? a : b; }
-	template<class T> const T CondExpGe(const T& x, const T& y, const T& a, const T& b) { return x >= y ? a : b; }
-	template<class T> const T CondExpEq(const T& x, const T& y, const T& a, const T& b) { return x == y ? a : b; }
-	template<class T> const T max(const T& x, const T& y) { return QLFCT::CondExpGt(x, y, x, y); }
-	template<class T> const T min(const T& x, const T& y) { return QLFCT::CondExpLt(x, y, x, y); }
+	template<class T> inline const T CondExpLt(const T& x, const T& y, const T& a, const T& b) { return x < y ? a : b; }
+	template<class T> inline const T CondExpLe(const T& x, const T& y, const T& a, const T& b) { return x <= y ? a : b; }
+	template<class T> inline const T CondExpGt(const T& x, const T& y, const T& a, const T& b) { return x > y ? a : b; }
+	template<class T> inline const T CondExpGe(const T& x, const T& y, const T& a, const T& b) { return x >= y ? a : b; }
+	template<class T> inline const T CondExpEq(const T& x, const T& y, const T& a, const T& b) { return x == y ? a : b; }
+	template<class T> inline const T max(const T& x, const T& y) { return QLFCT::CondExpGt(x, y, x, y); }
+	template<class T> inline const T min(const T& x, const T& y) { return QLFCT::CondExpLt(x, y, x, y); }
 }
 #endif
 
