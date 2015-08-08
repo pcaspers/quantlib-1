@@ -157,13 +157,15 @@ int main() {
             boost::make_shared<EuriborSwapIsdaFixA_t<dbl> >(2 * Years, yts6m_h);
 
         boost::shared_ptr<SwaptionVolatilityStructure_t<dbl> > swvol =
-            boost::make_shared<SwaptionVolCube1_t<dbl>::Type>(
-                swatm_h, optionTenors, swapTenors, strikeSpreads, volSpreads,
-                indexBase, indexBaseShort, true, sabrParams, paramFixed, true,
-                boost::shared_ptr<EndCriteria_t<dbl> >(), 100.0);
+            boost::shared_ptr<SwaptionVolCube1_t<dbl>::Type>(
+                new SwaptionVolCube1_t<dbl>::Type(
+                    swatm_h, optionTenors, swapTenors, strikeSpreads,
+                    volSpreads, indexBase, indexBaseShort, true, sabrParams,
+                    paramFixed, true, boost::shared_ptr<EndCriteria_t<dbl> >(),
+                    100.0));
         Handle<SwaptionVolatilityStructure_t<dbl> > swvol_h(swvol);
 
-        std::cout << "test atm = " << swvol_h->volatility(1.0, 1.0, 0.05)
+        std::cout << "test vol = " << swvol_h->volatility(1.0, 1.0, 0.05)
                   << std::endl;
         timer.stop();
         std::cout << "timing: " << timer.elapsed() << std::endl;
@@ -287,18 +289,21 @@ int main() {
             Handle<Quote_t<dblAD> > volAD_q(
                 boost::make_shared<SimpleQuote_t<dblAD> >(inputVolAD[i - 1]));
             boost::shared_ptr<SwaptionHelper_t<dbl> > tmp =
-                boost::make_shared<SwaptionHelper_t<dbl> >(
-                    exerciseDates[i - 1], swapLength, vol_q, euribor6m,
-                    1 * Years, Thirty360(), Actual360(), yts6m_h,
-                    CalibrationHelper_t<dbl>::RelativePriceError, strike, 1.0);
+                boost::shared_ptr<SwaptionHelper_t<dbl> >(
+                    new SwaptionHelper_t<dbl>(
+                        exerciseDates[i - 1], swapLength, vol_q, euribor6m,
+                        1 * Years, Thirty360(), Actual360(), yts6m_h,
+                        CalibrationHelper_t<dbl>::RelativePriceError, strike,
+                        1.0));
             tmp->setPricingEngine(swaptionEngine);
             basket.push_back(tmp);
             boost::shared_ptr<SwaptionHelper_t<dblAD> > tmpAD =
-                boost::make_shared<SwaptionHelper_t<dblAD> >(
-                    exerciseDates[i - 1], swapLength, volAD_q, euribor6mAD,
-                    1 * Years, Thirty360(), Actual360(), yts6mAD_h,
-                    CalibrationHelper_t<dblAD>::RelativePriceError, strike,
-                    1.0);
+                boost::shared_ptr<SwaptionHelper_t<dblAD> >(
+                    new SwaptionHelper_t<dblAD>(
+                        exerciseDates[i - 1], swapLength, volAD_q, euribor6mAD,
+                        1 * Years, Thirty360(), Actual360(), yts6mAD_h,
+                        CalibrationHelper_t<dblAD>::RelativePriceError, strike,
+                        1.0));
             tmpAD->setPricingEngine(swaptionEngineAD);
             basketAD.push_back(tmpAD);
         }
@@ -402,10 +407,8 @@ int main() {
         timer.start();
         swaptionAD->setPricingEngine(swaptionEngineAD);
         std::vector<dblAD> yAD(1, 0.0);
-#ifdef QLCPPAD
         yAD[0] = swaptionAD->NPV();
-#endif
-#ifdef ADOLC
+#ifdef QLADOLC
         double yout;
         yAD[0] >>= yout;
         trace_off();
@@ -421,7 +424,6 @@ int main() {
         // CppAD::ADFun<Real> f(sigmasAD, yAD);
         std::vector<Real> vega(sigmasAD.size()), w(1, 1.0);
         vega = f.Reverse(1, w);
-        timer.stop();
 #endif
 #ifdef QLADOLC
         double u[1];
@@ -429,6 +431,7 @@ int main() {
         double vega[sigmasAD.size()];
         reverse(tag, 1, sigmasAD.size(), 0, u, vega);
 #endif
+        timer.stop();
         std::cout << "timing AD reverse sweep: " << timer.elapsed()
                   << std::endl;
 
