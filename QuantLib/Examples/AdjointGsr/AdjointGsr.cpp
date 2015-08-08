@@ -163,7 +163,7 @@ int main() {
                 boost::shared_ptr<EndCriteria_t<dbl> >(), 100.0);
         Handle<SwaptionVolatilityStructure_t<dbl> > swvol_h(swvol);
 
-        std::cout << "test atm = " << swvol_h->volatility(1.0, 1.0, 0.05)
+        std::cout << "test vol = " << swvol_h->volatility(1.0, 1.0, 0.05)
                   << std::endl;
         timer.stop();
         std::cout << "timing: " << timer.elapsed() << std::endl;
