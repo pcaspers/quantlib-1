@@ -372,7 +372,7 @@ Gsr_t<T>::zerobondImpl(const Time T0, const Time t, const T y,
                     this->termStructure()->discount(t, true)
               : yts->discount(T0, true) / yts->discount(t, true);
 
-    return d * QLFCT::exp(-x * gtT - 0.5 * p->y(t) * gtT * gtT);
+    return d * exp(-x * gtT - 0.5 * p->y(t) * gtT * gtT);
 }
 
 template <class T>

@@ -50,11 +50,11 @@ template <class T>
 T unsafeSabrVolatility(T strike, T forward, Time expiryTime, T alpha, T beta,
                        T nu, T rho) {
     const T oneMinusBeta = 1.0 - beta;
-    const T A = QLFCT::pow(forward * strike, oneMinusBeta);
-    const T sqrtA = QLFCT::sqrt(A);
+    const T A = pow(forward * strike, oneMinusBeta);
+    const T sqrtA = sqrt(A);
     T logM;
     if (!close(forward, strike))
-        logM = QLFCT::log(forward / strike);
+        logM = log(forward / strike);
     else {
         const T epsilon = (forward - strike) / strike;
         logM = epsilon - .5 * epsilon * epsilon;
@@ -62,8 +62,8 @@ T unsafeSabrVolatility(T strike, T forward, Time expiryTime, T alpha, T beta,
     const T z = (nu / alpha) * sqrtA * logM;
     const T B = 1.0 - 2.0 * rho * z + z * z;
     const T C = oneMinusBeta * oneMinusBeta * logM * logM;
-    const T tmp = (QLFCT::sqrt(B) + z - rho) / (1.0 - rho);
-    const T xx = QLFCT::log(tmp);
+    const T tmp = (sqrt(B) + z - rho) / (1.0 - rho);
+    const T xx = log(tmp);
     const T D = sqrtA * (1.0 + C / 24.0 + C * C / 1920.0);
     const T d =
         1.0 +
@@ -75,7 +75,7 @@ T unsafeSabrVolatility(T strike, T forward, Time expiryTime, T alpha, T beta,
     // computations become precise enough if the square of z worth
     // slightly more than the precision machine (hence the m)
     static const T m = 10;
-    if (QLFCT::abs(z * z) > QL_EPSILON * m)
+    if (fabs(z * z) > QL_EPSILON * m)
         multiplier = z / xx;
     else {
         multiplier =

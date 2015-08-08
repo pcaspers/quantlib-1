@@ -221,10 +221,10 @@ T effectiveFixedRate(const std::vector<T> &spreads, const std::vector<T> &caps,
     T result = get(spreads, i, 0.0);
     T floor = get(floors, i, Null<Rate>());
     if (floor != Null<Rate>())
-        result = QLFCT::max<T>(floor, result);
+        result = fmax(floor, result);
     T cap = get(caps, i, Null<Rate>());
     if (cap != Null<Rate>())
-        result = QLFCT::min<T>(cap, result);
+        result = fmin(cap, result);
     return result;
 }
 

@@ -32,30 +32,17 @@
 namespace CppAD {
 
 template <class T> inline
-const T max(const  T& x, const T& y) {
-    return CppAD::CondExpGt(x, y, x, y);
+const T fmax(const  T& x, const T& y) {
+    return CondExpGt(x, y, x, y);
 }
 
 template <class T> inline
-const T min(const T& x, const T& y) {
-    return CppAD::CondExpLt(x, y, x, y);
+const T fmin(const T& x, const T& y) {
+    return CondExpLt(x, y, x, y);
 }
 
 }
 
-namespace QLFCT {
-
-using CppAD::max; using CppAD::min; using CppAD::pow; using CppAD::log;
-using CppAD::exp; using CppAD::abs; using CppAD::sqrt;
-using CppAD::sin; using CppAD::cos; using CppAD::tan;
-using CppAD::sinh; using CppAD::cosh; using CppAD::tanh;
-using CppAD::asin; using CppAD::acos; using CppAD::atan;
-// using CppAD::asinh; using CppAD::acosh; using CppAD::atanh; // not yet in cppad
-using CppAD::erf;
-using CppAD::CondExpLt; using CppAD::CondExpLe;
-using CppAD::CondExpGt; using CppAD::CondExpGe;
-using CppAD::CondExpEq;
-
-}
+using namespace CppAD;
 
 #endif

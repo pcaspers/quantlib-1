@@ -138,7 +138,7 @@ AbcdFunction_t<Ty>::AbcdFunction_t(Ty a, Ty b, Ty c, Ty d)
 }
 
 template <class Ty> Ty AbcdFunction_t<Ty>::operator()(Time u) const {
-    return u < 0 ? 0.0 : (a_ + b_ * u) * QLFCT::exp(-c_ * u) + d_;
+    return u < 0 ? 0.0 : (a_ + b_ * u) * exp(-c_ * u) + d_;
 }
 
 template <class Ty> Ty AbcdFunction_t<Ty>::maximumLocation() const {
@@ -157,7 +157,7 @@ template <class Ty> Ty AbcdFunction_t<Ty>::maximumVolatility() const {
         return shortTermVolatility();
     } else {
         if ((b_ - c_ * a_) / (c_ * b_) > 0.0) {
-            return b_ / c_ * QLFCT::exp(-1.0 + c_ * a_ / b_) + d_;
+            return b_ / c_ * exp(-1.0 + c_ * a_ / b_) + d_;
         } else
             return shortTermVolatility();
     }
@@ -168,7 +168,7 @@ Ty AbcdFunction_t<Ty>::volatility(Time tMin, Time tMax, Time T) const {
     if (tMax == tMin)
         return instantaneousVolatility(tMax, T);
     QL_REQUIRE(tMax > tMin, "tMax must be > tMin");
-    return QLFCT::sqrt(variance(tMin, tMax, T) / (tMax - tMin));
+    return sqrt(variance(tMin, tMax, T) / (tMax - tMin));
 }
 
 template <class Ty>
@@ -185,11 +185,11 @@ template <class Ty>
 Ty AbcdFunction_t<Ty>::covariance(Time t1, Time t2, Time T, Time S) const {
     QL_REQUIRE(t1 <= t2, "integrations bounds (" << t1 << "," << t2
                                                  << ") are in reverse order");
-    Time cutOff = QLFCT::min(S, T);
+    Time cutOff = fmin(S, T);
     if (t1 >= cutOff) {
         return 0.0;
     } else {
-        cutOff = QLFCT::min(t2, cutOff);
+        cutOff = fmin(t2, cutOff);
         return primitive(cutOff, T, S) - primitive(t1, T, S);
     }
 }
@@ -197,7 +197,7 @@ Ty AbcdFunction_t<Ty>::covariance(Time t1, Time t2, Time T, Time S) const {
 // INSTANTANEOUS
 template <class Ty>
 Ty AbcdFunction_t<Ty>::instantaneousVolatility(Time u, Time T) const {
-    return QLFCT::sqrt(instantaneousVariance(u, T));
+    return sqrt(instantaneousVariance(u, T));
 }
 
 template <class Ty>
@@ -222,7 +222,7 @@ Ty AbcdFunction_t<Ty>::primitive(Time t, Time T, Time S) const {
                 0.5 * b_ * b_ * t * (S + T) + b_ * b_ * t * t / 3.0);
     }
 
-    Ty k1 = QLFCT::exp(c_ * t), k2 = QLFCT::exp(c_ * S), k3 = QLFCT::exp(c_ * T);
+    Ty k1 = exp(c_ * t), k2 = exp(c_ * S), k3 = exp(c_ * T);
 
     return (b_ * b_ * (-1 - 2 * c_ * c_ * S * T - c_ * (S + T) +
                        k1 * k1 * (1 + c_ * (S + T - 2 * t) +

@@ -104,8 +104,9 @@ class XABRInterpolationImpl_t
     XABRInterpolationImpl_t(
         const I1 &xBegin, const I1 &xEnd, const I2 &yBegin, Time t,
         const T &forward, std::vector<T> params, std::vector<bool> paramIsFixed,
-        bool vegaWeighted, const boost::shared_ptr<EndCriteria_t<T>> &endCriteria,
-        const boost::shared_ptr<OptimizationMethod_t<T>> &optMethod,
+        bool vegaWeighted,
+        const boost::shared_ptr<EndCriteria_t<T> > &endCriteria,
+        const boost::shared_ptr<OptimizationMethod_t<T> > &optMethod,
         const T errorAccept, const bool useMaxError, const Size maxGuesses)
         : Interpolation_t<T>::template templateImpl<I1, I2>(xBegin, xEnd,
                                                             yBegin),
@@ -141,7 +142,7 @@ class XABRInterpolationImpl_t
             this->weights_.clear();
             T weightsSum = 0.0;
             for (; x != this->xEnd_; ++x, ++y) {
-                T stdDev = QLFCT::sqrt((*y) * (*y) * this->t_);
+                T stdDev = sqrt((*y) * (*y) * this->t_);
                 this->weights_.push_back(
                     blackFormulaStdDevDerivative<T>(*x, forward_, stdDev));
                 weightsSum += this->weights_.back();
@@ -202,7 +203,7 @@ class XABRInterpolationImpl_t
 
                 NoConstraint_t<T> constraint;
                 Problem_t<T> problem(constrainedXABRError, constraint,
-                                projectedGuess);
+                                     projectedGuess);
                 tmpEndCriteria = optMethod_->minimize(problem, *endCriteria_);
                 Array_t<T> projectedResult(problem.currentValue());
                 Array_t<T> transfResult(
@@ -264,7 +265,7 @@ class XABRInterpolationImpl_t
         typename std::vector<T>::const_iterator y = this->yBegin_;
         typename std::vector<T>::const_iterator w = this->weights_.begin();
         for (; x != this->xEnd_; ++x, ++r, ++w, ++y) {
-            *r = (value(*x) - *y) * QLFCT::sqrt(*w);
+            *r = (value(*x) - *y) * sqrt(*w);
         }
         return results;
     }
@@ -272,7 +273,7 @@ class XABRInterpolationImpl_t
     T interpolationError() const {
         Size n = this->xEnd_ - this->xBegin_;
         T squaredError = interpolationSquaredError();
-        return QLFCT::sqrt(n * squaredError / (n == 1 ? 1 : (n - 1)));
+        return sqrt(n * squaredError / (n == 1 ? 1 : (n - 1)));
     }
 
     T interpolationMaxError() const {
@@ -280,8 +281,8 @@ class XABRInterpolationImpl_t
         I1 i = this->xBegin_;
         I2 j = this->yBegin_;
         for (; i != this->xEnd_; ++i, ++j) {
-            error = QLFCT::abs(value(*i) - *j);
-            maxError = QLFCT::max(maxError, error);
+            error = fabs(value(*i) - *j);
+            maxError = fmax(maxError, error);
         }
         return maxError;
     }
@@ -313,8 +314,8 @@ class XABRInterpolationImpl_t
       private:
         XABRInterpolationImpl_t<I1, I2, Model, T> *xabr_;
     };
-    boost::shared_ptr<EndCriteria_t<T>> endCriteria_;
-    boost::shared_ptr<OptimizationMethod_t<T>> optMethod_;
+    boost::shared_ptr<EndCriteria_t<T> > endCriteria_;
+    boost::shared_ptr<OptimizationMethod_t<T> > optMethod_;
     const T errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

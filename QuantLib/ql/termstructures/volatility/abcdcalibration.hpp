@@ -84,10 +84,10 @@ template <class T> class AbcdCalibration_t {
         }
 
         Array_t<T> inverse(const Array &x) const {
-            y_[0] = QLFCT::sqrt(x[0] + x[3] - eps1_);
+            y_[0] = sqrt(x[0] + x[3] - eps1_);
             y_[1] = x[1];
-            y_[2] = QLFCT::sqrt(x[2] - eps1_);
-            y_[3] = QLFCT::sqrt(x[3] - eps1_);
+            y_[2] = sqrt(x[2] - eps1_);
+            y_[3] = sqrt(x[3] - eps1_);
             return y_;
         }
     };
@@ -173,7 +173,7 @@ template <class T> void AbcdCalibration_t<T>::compute() {
     if (vegaWeighted_) {
         T weightsSum = 0.0;
         for (Size i = 0; i < times_.size(); i++) {
-            T stdDev = QLFCT::sqrt(blackVols_[i] * blackVols_[i] * times_[i]);
+            T stdDev = sqrt(blackVols_[i] * blackVols_[i] * times_[i]);
             // when strike==forward, the blackFormulaStdDevDerivative becomes
             weights_[i] =
                 CumulativeNormalDistribution_t<T>().derivative(.5 * stdDev);
@@ -267,14 +267,14 @@ template <class T> T AbcdCalibration_t<T>::error() const {
         error = (value(times_[i]) - blackVols_[i]);
         squaredError += error * error * (weights_[i]);
     }
-    return QLFCT::sqrt(n * squaredError / (n - 1));
+    return sqrt(n * squaredError / (n - 1));
 }
 
 template <class T> T AbcdCalibration_t<T>::maxError() const {
     T error, maxError = QL_MIN_REAL;
     for (Size i = 0; i < times_.size(); i++) {
-        error = QLFCT::abs(value(times_[i]) - blackVols_[i]);
-        maxError = QLFCT::max(maxError, error);
+        error = fabs(value(times_[i]) - blackVols_[i]);
+        maxError = fmax(maxError, error);
     }
     return maxError;
 }
@@ -285,7 +285,7 @@ Disposable<Array_t<T> > AbcdCalibration_t<T>::errors() const {
     Array_t<T> results(times_.size());
     for (Size i = 0; i < times_.size(); i++) {
         results[i] =
-            (value(times_[i]) - blackVols_[i]) * QLFCT::sqrt(weights_[i]);
+            (value(times_[i]) - blackVols_[i]) * sqrt(weights_[i]);
     }
     return results;
 }

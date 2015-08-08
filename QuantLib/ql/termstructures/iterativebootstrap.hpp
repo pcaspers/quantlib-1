@@ -219,9 +219,9 @@ void IterativeBootstrap<Curve,T>::calculate() const {
             continue; // at least one more iteration to convergence check
 
         // exit condition
-        T change = QLFCT::abs(data[1] - previousData_[1]);
+        T change = fabs(data[1] - previousData_[1]);
         for (Size i = 2; i <= alive_; ++i)
-            change = QLFCT::max<T>(change, QLFCT::abs(data[i] - previousData_[i]));
+            change = fmax(change, fabs(data[i] - previousData_[i]));
         if (change <= accuracy) // convergence reached
             break;
 

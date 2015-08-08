@@ -120,7 +120,7 @@ template <class T> void Gaussian1dSwaptionEngine_t<T>::calculate() const {
         else
             expiry0 = this->arguments_.exercise->dates()[idx];
 
-        expiry0Time = QLFCT::max(
+        expiry0Time = fmax(
             this->model_->termStructure()->timeFromReference(expiry0), 0.0);
 
         Size j1 = std::upper_bound(fixedSchedule.dates().begin(),
@@ -234,7 +234,7 @@ template <class T> void Gaussian1dSwaptionEngine_t<T>::calculate() const {
                                        this->arguments_.fixedPayDates[l],
                                        expiry0, z[k], discountCurve_);
                 }
-                npv0[k] = QLFCT::max(
+                npv0[k] = fmax(
                     npv0[k], (type == Option::Call ? 1.0 : -1.0) *
                                  (floatingLegNpv - fixedLegNpv) /
                                  this->model_->numeraire(expiry0Time, z[k],

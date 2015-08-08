@@ -69,7 +69,7 @@ class FiniteDifferenceNewtonSafe_t
             if ((((this->root_ - xh) * dfroot - froot) *
                      ((this->root_ - xl) * dfroot - froot) >
                  0.0) ||
-                (QLFCT::abs(2.0 * froot) > QLFCT::abs(dxold * dfroot))) {
+                (fabs(2.0 * froot) > fabs(dxold * dfroot))) {
                 dx = (xh - xl) / 2.0;
                 this->root_ = xl + dx;
                 // if the root estimate just computed is close to the
@@ -86,7 +86,7 @@ class FiniteDifferenceNewtonSafe_t
             }
 
             // Convergence criterion
-            if (QLFCT::abs(dx) < xAccuracy)
+            if (fabs(dx) < xAccuracy)
                 return this->root_;
 
             froot = f(this->root_);

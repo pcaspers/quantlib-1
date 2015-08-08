@@ -184,7 +184,7 @@ template <class T> T enorm(int n, T *x) {
     agiant = rgiant / floatn;
 
     for (i = 0; i < n; i++) {
-        xabs = QLFCT::abs(x[i]);
+        xabs = fabs(x[i]);
         if ((xabs > rdwarf) && (xabs < agiant)) {
             /*
             *       sum for intermediate components.
@@ -226,7 +226,7 @@ template <class T> T enorm(int n, T *x) {
     */
     if (s1 != zero) {
         temp = s1 + (s2 / x1max) / x1max;
-        ans = x1max * QLFCT::sqrt(temp);
+        ans = x1max * sqrt(temp);
         return (ans);
     }
     if (s2 != zero) {
@@ -234,9 +234,9 @@ template <class T> T enorm(int n, T *x) {
             temp = s2 * (one + (x3max / s2) * (x3max * s3));
         else
             temp = x3max * ((s2 / x3max) + (x3max * s3));
-        ans = QLFCT::sqrt(temp);
+        ans = sqrt(temp);
     } else {
-        ans = x3max * QLFCT::sqrt(s3);
+        ans = x3max * sqrt(s3);
     }
     return (ans);
     /*
@@ -245,9 +245,9 @@ template <class T> T enorm(int n, T *x) {
 }
 /************************lmmisc.c*************************/
 
-template <class T> T dmax1(T a, T b) { return QLFCT::max(a, b); }
+template <class T> T dmax1(T a, T b) { return fmax(a, b); }
 
-template <class T> T dmin1(T a, T b) { return QLFCT::min(a, b); }
+template <class T> T dmin1(T a, T b) { return fmin(a, b); }
 
 inline int min0(int a, int b) {
     if (a <= b)
@@ -355,11 +355,11 @@ void fdjac2(int m, int n, T *x, T *fvec, T *fjac, int, int *iflag, T epsfcn,
     static T zero = 0.0;
 
     temp = dmax1(epsfcn, T(MACHEP));
-    eps = QLFCT::sqrt(temp);
+    eps = sqrt(temp);
     ij = 0;
     for (j = 0; j < n; j++) {
         temp = x[j];
-        h = eps * QLFCT::abs(temp);
+        h = eps * fabs(temp);
         if (h == zero)
             h = eps;
         x[j] = temp + h;
@@ -552,7 +552,7 @@ void qrfac(int m, int n, T *a, int, int pivot, int *ipvt, int, T *rdiag,
                 if ((pivot != 0) && (rdiag[k] != zero)) {
                     temp = a[j + m * k] / rdiag[k];
                     temp = dmax1(zero, T(one - temp * temp));
-                    rdiag[k] *= QLFCT::sqrt(temp);
+                    rdiag[k] *= sqrt(temp);
                     temp = rdiag[k] / wa[k];
                     if ((p05 * temp * temp) <= T(MACHEP)) {
                         rdiag[k] = enorm(m - j - 1, &a[jp1 + m * k]);
@@ -705,13 +705,13 @@ void qrsolv(int n, T *r, int ldr, int *ipvt, T *diag, T *qtb, T *x, T *sdiag,
             if (sdiag[k] == zero)
                 continue;
             kk = k + ldr * k;
-            if (QLFCT::abs(r[kk]) < QLFCT::abs(sdiag[k])) {
+            if (fabs(r[kk]) < fabs(sdiag[k])) {
                 cotan = r[kk] / sdiag[k];
-                sin = p5 / QLFCT::sqrt(p25 + p25 * cotan * cotan);
+                sin = p5 / sqrt(p25 + p25 * cotan * cotan);
                 cos = sin * cotan;
             } else {
                 tan = sdiag[k] / r[kk];
-                cos = p5 / QLFCT::sqrt(p25 + p25 * tan * tan);
+                cos = p5 / sqrt(p25 + p25 * tan * tan);
                 sin = cos * tan;
             }
             /*
@@ -1004,7 +1004,7 @@ L150:
     */
     if (*par == zero)
         *par = dmax1(T(DWARF), T(p001 * paru));
-    temp = QLFCT::sqrt(*par);
+    temp = sqrt(*par);
     for (j = 0; j < n; j++)
         wa1[j] = temp * diag[j];
     qrsolv(n, r, ldr, ipvt, wa1, qtb, x, sdiag, wa2);
@@ -1018,7 +1018,7 @@ L150:
     *    of par. also test for the exceptional cases where parl
     *    is zero or the number of iterations has reached 10.
     */
-    if ((QLFCT::abs(fp) <= p1 * delta) ||
+    if ((fabs(fp) <= p1 * delta) ||
         ((parl == zero) && (fp <= temp) && (temp < zero)) || (iter == 10))
         goto L220;
     /*
@@ -1402,7 +1402,7 @@ L30:
                     sum += fjac[ij] * (qtf[i] / fnorm);
                     ij += 1; /* fjac[i+m*j] */
                 }
-                gnorm = dmax1(gnorm, QLFCT::abs(sum / wa2[l]));
+                gnorm = dmax1(gnorm, T(fabs(sum / wa2[l])));
             }
             jj += m;
         }
@@ -1479,7 +1479,7 @@ L200:
         jj += m;
     }
     temp1 = enorm(n, wa3) / fnorm;
-    temp2 = (QLFCT::sqrt(par) * pnorm) / fnorm;
+    temp2 = (sqrt(par) * pnorm) / fnorm;
     prered = temp1 * temp1 + (temp2 * temp2) / p5;
     dirder = -(temp1 * temp1 + temp2 * temp2);
     /*
@@ -1527,11 +1527,11 @@ L200:
     /*
     *       tests for convergence.
     */
-    if ((QLFCT::abs(actred) <= ftol) && (prered <= ftol) && (p5 * ratio <= one))
+    if ((fabs(actred) <= ftol) && (prered <= ftol) && (p5 * ratio <= one))
         *info = 1;
     if (delta <= xtol * xnorm)
         *info = 2;
-    if ((QLFCT::abs(actred) <= ftol) && (prered <= ftol) &&
+    if ((fabs(actred) <= ftol) && (prered <= ftol) &&
         (p5 * ratio <= one) && (*info == 2))
         *info = 3;
     if (*info != 0)
@@ -1541,7 +1541,7 @@ L200:
     */
     if (*nfev >= maxfev)
         *info = 5;
-    if ((QLFCT::abs(actred) <= T(MACHEP)) && (prered <= T(MACHEP)) &&
+    if ((fabs(actred) <= T(MACHEP)) && (prered <= T(MACHEP)) &&
         (p5 * ratio <= one))
         *info = 6;
     if (delta <= T(MACHEP) * xnorm)

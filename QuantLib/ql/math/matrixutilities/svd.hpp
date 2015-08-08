@@ -87,10 +87,10 @@ namespace {
 */
 template <class T> inline T hypot(const T &a, const T &b) {
     if (a == 0) {
-        return QLFCT::abs(b);
+        return fabs(b);
     } else {
         T c = b / a;
-        return QLFCT::abs(a) * QLFCT::sqrt(1 + c * c);
+        return fabs(a) * sqrt(1 + c * c);
     }
 }
 }
@@ -140,9 +140,9 @@ template <class T> SVD_t<T>::SVD_t(const Matrix_t<T> &M) {
     // Reduce A to bidiagonal form, storing the diagonal elements
     // in s and the super-diagonal elements in e.
 
-    Integer nct = static_cast<Integer>(QLFCT::min<double>(m_ - 1, n_));
-    Integer nrt = static_cast<Integer>(QLFCT::max<double>(0, n_ - 2));
-    for (k = 0; k < static_cast<Integer>(QLFCT::max<double>(nct, nrt)); k++) {
+    Integer nct = static_cast<Integer>(fmin(m_ - 1, n_));
+    Integer nrt = static_cast<Integer>(fmax(0, n_ - 2));
+    for (k = 0; k < static_cast<Integer>(fmax(nct, nrt)); k++) {
         if (k < nct) {
 
             // Compute the transformation for the k-th column and
@@ -310,7 +310,7 @@ template <class T> SVD_t<T>::SVD_t(const Matrix_t<T> &M) {
 
     Integer p = n_, pp = p - 1;
     Integer iter = 0;
-    T eps = QLFCT::pow(2.0, -52.0);
+    T eps = pow(2.0, -52.0);
     while (p > 0) {
         Integer k;
         Integer kase;
@@ -331,8 +331,8 @@ template <class T> SVD_t<T>::SVD_t(const Matrix_t<T> &M) {
             if (k == -1) {
                 break;
             }
-            if (QLFCT::abs(e[k]) <=
-                eps * (QLFCT::abs(s_[k]) + QLFCT::abs(s_[k + 1]))) {
+            if (fabs(e[k]) <=
+                eps * (fabs(s_[k]) + fabs(s_[k + 1]))) {
                 e[k] = 0.0;
                 break;
             }
@@ -345,9 +345,9 @@ template <class T> SVD_t<T>::SVD_t(const Matrix_t<T> &M) {
                 if (ks == k) {
                     break;
                 }
-                T t = (ks != p ? QLFCT::abs(e[ks]) : 0.) +
-                      (ks != k + 1 ? QLFCT::abs(e[ks - 1]) : 0.);
-                if (QLFCT::abs(s_[ks]) <= eps * t) {
+                T t = (ks != p ? fabs(e[ks]) : 0.) +
+                      (ks != k + 1 ? fabs(e[ks - 1]) : 0.);
+                if (fabs(s_[ks]) <= eps * t) {
                     s_[ks] = 0.0;
                     break;
                 }
@@ -414,12 +414,12 @@ template <class T> SVD_t<T>::SVD_t(const Matrix_t<T> &M) {
         case 3: {
 
             // Calculate the shift.
-            T scale = QLFCT::max(
-                QLFCT::max(QLFCT::max(QLFCT::max(QLFCT::abs(s_[p - 1]),
-                                                 QLFCT::abs(s_[p - 2])),
-                                      QLFCT::abs(e[p - 2])),
-                           QLFCT::abs(s_[k])),
-                QLFCT::abs(e[k]));
+            T scale = fmax(
+                fmax(fmax(fmax(fabs(s_[p - 1]),
+                                                 fabs(s_[p - 2])),
+                                      fabs(e[p - 2])),
+                           fabs(s_[k])),
+                fabs(e[k]));
             T sp = s_[p - 1] / scale;
             T spm1 = s_[p - 2] / scale;
             T epm1 = e[p - 2] / scale;
@@ -429,7 +429,7 @@ template <class T> SVD_t<T>::SVD_t(const Matrix_t<T> &M) {
             T c = (sp * epm1) * (sp * epm1);
             T shift = 0.0;
             if ((b != 0.0) | (c != 0.0)) {
-                shift = QLFCT::sqrt(b * b + c);
+                shift = sqrt(b * b + c);
                 if (b < 0.0) {
                     shift = -shift;
                 }

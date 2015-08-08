@@ -67,7 +67,7 @@ template <class T> class Newton_t : public Solver1D<Newton_t<T>, T> {
                 return s.solve(f, xAccuracy, this->root_ + dx, this->xMin_,
                                this->xMax_);
             }
-            if (QLFCT::abs(dx) < xAccuracy) {
+            if (fabs(dx) < xAccuracy) {
                 f(this->root_);
                 ++this->evaluationNumber_;
                 return this->root_;

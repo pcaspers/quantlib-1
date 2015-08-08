@@ -131,7 +131,7 @@ template <class T> T CalibrationHelper_t<T>::calibrationError() {
 
     switch (calibrationErrorType_) {
     case RelativePriceError:
-        error = QLFCT::abs(marketValue() - modelValue()) / marketValue();
+        error = fabs(marketValue() - modelValue()) / marketValue();
         break;
     case PriceError:
         error = marketValue() - modelValue();

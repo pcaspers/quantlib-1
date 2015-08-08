@@ -76,7 +76,7 @@ T blackFormula(Option::Type optionType, T strike, T forward, T stdDev,
                                                << ") must be positive");
 
     if (stdDev == T(0.0))
-        return QLFCT::max<T>(T((forward - strike) * optionType), T(0.0)) *
+        return fmax(T((forward - strike) * optionType), T(0.0)) *
                discount;
     forward = forward + displacement;
     strike = strike + displacement;
@@ -86,7 +86,7 @@ T blackFormula(Option::Type optionType, T strike, T forward, T stdDev,
     if (strike == T(0.0))
         return (optionType == Option::Call ? forward * discount : T(0.0));
 
-    T d1 = QLFCT::log(forward / strike) / stdDev + 0.5 * stdDev;
+    T d1 = log(forward / strike) / stdDev + 0.5 * stdDev;
     T d2 = d1 - stdDev;
     CumulativeNormalDistribution_t<T> phi;
     T nd1 = phi(optionType * d1);
@@ -134,7 +134,7 @@ T blackFormulaImpliedStdDevApproximation(Option::Type optionType, T strike,
     strike = strike + displacement;
 
     // Brenner-Subrahmanyan (1988) and Feinstein (1988) ATM approx.
-    T result0 = blackPrice / discount * QLFCT::sqrt(2.0 * M_PI) / forward;
+    T result0 = blackPrice / discount * sqrt(2.0 * M_PI) / forward;
 
     // Corrado and Miller extended moneyness approximation
     T moneynessDelta = optionType * (forward - strike);
@@ -144,15 +144,15 @@ T blackFormulaImpliedStdDevApproximation(Option::Type optionType, T strike,
     T temp2 = temp * temp - moneynessDelta_PI;
     // approximation breaks down, 2 alternatives:
     // 1. zero it
-    temp2 = QLFCT::CondExpLt(temp2, T(0.0), T(0.0), temp2);
+    temp2 = CondExpLt(temp2, T(0.0), T(0.0), temp2);
     // 2. Manaster-Koehler (1982) efficient Newton-Raphson seed
     // return std::fabs(std::log(forward/strike))*std::sqrt(2.0);
-    temp2 = QLFCT::sqrt(temp2);
+    temp2 = sqrt(temp2);
     temp += temp2;
-    temp *= QLFCT::sqrt(2.0 * M_PI);
+    temp *= sqrt(2.0 * M_PI);
     T result1 = temp / (forward + strike);
 
-    T stdDev = QLFCT::CondExpEq(strike, forward, result0, result1);
+    T stdDev = CondExpEq(strike, forward, result0, result1);
     QL_ENSURE(stdDev >= T(0.0), "stdDev (" << stdDev
                                            << ") must be non-negative");
     return stdDev;
@@ -188,7 +188,7 @@ template <class T> class BlackImpliedStdDevHelper_t {
         QL_REQUIRE(undiscountedBlackPrice >= T(0.0),
                    "undiscounted Black price (" << undiscountedBlackPrice
                                                 << ") must be non-negative");
-        signedMoneyness_ = optionType * QLFCT::log((forward + displacement) /
+        signedMoneyness_ = optionType * log((forward + displacement) /
                                                    (strike + displacement));
     }
     T operator()(T stdDev) const {
@@ -197,7 +197,7 @@ template <class T> class BlackImpliedStdDevHelper_t {
                                                 << ") must be non-negative");
 #endif
         if (stdDev == T(0.0))
-            return QLFCT::max<T>(signedForward_ - signedStrike_, T(0.0)) -
+            return fmax(signedForward_ - signedStrike_, T(0.0)) -
                    undiscountedBlackPrice_;
         T temp = halfOptionType_ * stdDev;
         T d = signedMoneyness_ / stdDev;
@@ -205,7 +205,7 @@ template <class T> class BlackImpliedStdDevHelper_t {
         T signedD2 = d - temp;
         T result = signedForward_ * N_(signedD1) - signedStrike_ * N_(signedD2);
         // numerical inaccuracies can yield a negative answer
-        return QLFCT::max<T>(T(0.0), result) - undiscountedBlackPrice_;
+        return fmax(T(0.0), result) - undiscountedBlackPrice_;
     }
     T derivative(T stdDev) const {
 #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -314,7 +314,7 @@ T blackFormulaCashItmProbability(Option::Type optionType, T strike, T forward,
     strike = strike + displacement;
     if (strike == T(0.0))
         return (optionType == Option::Call ? T(1.0) : T(0.0));
-    T d2 = QLFCT::log(forward / strike) / stdDev - 0.5 * stdDev;
+    T d2 = log(forward / strike) / stdDev - 0.5 * stdDev;
     CumulativeNormalDistribution_t<T> phi;
     return phi(optionType * d2);
 }
@@ -355,7 +355,7 @@ T blackFormulaStdDevDerivative(T strike, T forward, T stdDev, T discount = 1.0,
     if (stdDev == T(0.0) || strike == T(0.0))
         return T(0.0);
 
-    T d1 = QLFCT::log(forward / strike) / stdDev + .5 * stdDev;
+    T d1 = log(forward / strike) / stdDev + .5 * stdDev;
     return discount * forward *
            CumulativeNormalDistribution_t<T>().derivative(d1);
 }
@@ -368,7 +368,7 @@ T blackFormulaVolDerivative(T strike, T forward, T stdDev, Time expiry,
                             T discount = 1.0, T displacement = 0.0) {
     return blackFormulaStdDevDerivative(strike, forward, stdDev, discount,
                                         displacement) *
-           QLFCT::sqrt(expiry);
+           sqrt(expiry);
 }
 
 /*! Black 1976 formula for standard deviation derivative
@@ -402,7 +402,7 @@ T bachelierBlackFormula(Option::Type optionType, T strike, T forward, T stdDev,
                                                << ") must be positive");
     T d = (forward - strike) * optionType, h = d / stdDev;
     if (stdDev == T(0.0))
-        return discount * QLFCT::max(d, T(0.0));
+        return discount * fmax(d, T(0.0));
     CumulativeNormalDistribution_t<T> phi;
     T result = discount * (stdDev * phi.derivative(h) + d * phi(h));
     QL_ENSURE(result >= T(0.0),
@@ -457,7 +457,7 @@ template <class T> inline T h(T eta) {
                                             eta * (B7 +
                                                    eta * (B8 + eta * B9))))))));
 
-    return QLFCT::sqrt(eta) * (num / den);
+    return sqrt(eta) * (num / den);
 }
 
 /*! Black style formula when forward is normal rather than
@@ -486,7 +486,7 @@ T bachelierBlackFormula(const boost::shared_ptr<PlainVanillaPayoff> &payoff,
 template <class T>
 T bachelierBlackFormulaImpliedVol(Option::Type optionType, T strike, T forward,
                                   Time tte, T bachelierPrice, T discount = 1.0) {
-    const static T SQRT_QL_EPSILON = QLFCT::sqrt(QL_EPSILON);
+    const static T SQRT_QL_EPSILON = sqrt(QL_EPSILON);
 
     QL_REQUIRE(tte > T(0.0), "tte (" << tte << ") must be positive");
 
@@ -503,15 +503,15 @@ T bachelierBlackFormulaImpliedVol(Option::Type optionType, T strike, T forward,
     QL_REQUIRE(nu <= T(1.0), "nu (" << nu << ") must be <= 1.0");
     QL_REQUIRE(nu >= T(-1.0), "nu (" << nu << ") must be >= -1.0");
 
-    nu = QLFCT::max(T(-1.0 + QL_EPSILON), QLFCT::min(nu, T(1.0 - QL_EPSILON)));
+    nu = fmax(T(-1.0 + QL_EPSILON), fmin(nu, T(1.0 - QL_EPSILON)));
 
     // nu / arctanh(nu) -> 1 as nu -> 0
     T eta =
-        (QLFCT::abs(nu) < SQRT_QL_EPSILON) ? 1.0 : nu / boost::math::atanh(nu);
+        (fabs(nu) < SQRT_QL_EPSILON) ? 1.0 : nu / boost::math::atanh(nu);
 
     T heta = h(eta);
 
-    T impliedBpvol = QLFCT::sqrt(M_PI / (2 * tte)) * straddlePremium * heta;
+    T impliedBpvol = sqrt(M_PI / (2 * tte)) * straddlePremium * heta;
 
     return impliedBpvol;
 }

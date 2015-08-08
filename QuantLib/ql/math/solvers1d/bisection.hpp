@@ -64,7 +64,7 @@ namespace QuantLib {
                 ++this->evaluationNumber_;
                 if (fMid <= 0.0)
                     this->root_ = xMid;
-                if (QLFCT::abs(dx) < xAccuracy || (close(fMid, T(0.0)))) {
+                if (fabs(dx) < xAccuracy || (close(fMid, T(0.0)))) {
                     f(this->root_);
                     ++this->evaluationNumber_;
                     return this->root_;

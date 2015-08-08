@@ -583,8 +583,8 @@ class CubicInterpolationImpl_t
                 case CubicInterpolation_t<T>::FritschButland:
                     // intermediate points
                     for (Size i = 1; i < this->n_ - 1; ++i) {
-                        T Smin = QLFCT::min(S_[i - 1], S_[i]);
-                        T Smax = QLFCT::max(S_[i - 1], S_[i]);
+                        T Smin = fmin(S_[i - 1], S_[i]);
+                        T Smax = fmax(S_[i - 1], S_[i]);
                         tmp_[i] = 3.0 * Smin * Smax / (Smax + 2.0 * Smin);
                     }
                     // end points
@@ -598,17 +598,17 @@ class CubicInterpolationImpl_t
                         (dx_[this->n_ - 2] + dx_[this->n_ - 3]);
                     break;
                 case CubicInterpolation_t<T>::Akima:
-                    tmp_[0] = (QLFCT::abs(S_[1] - S_[0]) * 2 * S_[0] * S_[1] +
-                               QLFCT::abs(2 * S_[0] * S_[1] -
+                    tmp_[0] = (fabs(S_[1] - S_[0]) * 2 * S_[0] * S_[1] +
+                               fabs(2 * S_[0] * S_[1] -
                                           4 * S_[0] * S_[0] * S_[1]) *
                                    S_[0]) /
-                              (QLFCT::abs(S_[1] - S_[0]) +
-                               QLFCT::abs(2 * S_[0] * S_[1] -
+                              (fabs(S_[1] - S_[0]) +
+                               fabs(2 * S_[0] * S_[1] -
                                           4 * S_[0] * S_[0] * S_[1]));
-                    tmp_[1] = (QLFCT::abs(S_[2] - S_[1]) * S_[0] +
-                               QLFCT::abs(S_[0] - 2 * S_[0] * S_[1]) * S_[1]) /
-                              (QLFCT::abs(S_[2] - S_[1]) +
-                               QLFCT::abs(S_[0] - 2 * S_[0] * S_[1]));
+                    tmp_[1] = (fabs(S_[2] - S_[1]) * S_[0] +
+                               fabs(S_[0] - 2 * S_[0] * S_[1]) * S_[1]) /
+                              (fabs(S_[2] - S_[1]) +
+                               fabs(S_[0] - 2 * S_[0] * S_[1]));
                     for (Size i = 2; i < this->n_ - 2; ++i) {
                         if ((S_[i - 2] == S_[i - 1]) && (S_[i] != S_[i + 1]))
                             tmp_[i] = S_[i - 1];
@@ -622,31 +622,31 @@ class CubicInterpolationImpl_t
                             tmp_[i] = (S_[i - 1] + S_[i]) / 2.0;
                         else
                             tmp_[i] =
-                                (QLFCT::abs(S_[i + 1] - S_[i]) * S_[i - 1] +
-                                 QLFCT::abs(S_[i - 1] - S_[i - 2]) * S_[i]) /
-                                (QLFCT::abs(S_[i + 1] - S_[i]) +
-                                 QLFCT::abs(S_[i - 1] - S_[i - 2]));
+                                (fabs(S_[i + 1] - S_[i]) * S_[i - 1] +
+                                 fabs(S_[i - 1] - S_[i - 2]) * S_[i]) /
+                                (fabs(S_[i + 1] - S_[i]) +
+                                 fabs(S_[i - 1] - S_[i - 2]));
                     }
                     tmp_[this->n_ - 2] =
-                        (QLFCT::abs(2 * S_[this->n_ - 2] * S_[this->n_ - 3] -
+                        (fabs(2 * S_[this->n_ - 2] * S_[this->n_ - 3] -
                                     S_[this->n_ - 2]) *
                              S_[this->n_ - 3] +
-                         QLFCT::abs(S_[this->n_ - 3] - S_[this->n_ - 4]) *
+                         fabs(S_[this->n_ - 3] - S_[this->n_ - 4]) *
                              S_[this->n_ - 2]) /
-                        (QLFCT::abs(2 * S_[this->n_ - 2] * S_[this->n_ - 3] -
+                        (fabs(2 * S_[this->n_ - 2] * S_[this->n_ - 3] -
                                     S_[this->n_ - 2]) +
-                         QLFCT::abs(S_[this->n_ - 3] - S_[this->n_ - 4]));
+                         fabs(S_[this->n_ - 3] - S_[this->n_ - 4]));
                     tmp_[this->n_ - 1] =
-                        (QLFCT::abs(4 * S_[this->n_ - 2] * S_[this->n_ - 2] *
+                        (fabs(4 * S_[this->n_ - 2] * S_[this->n_ - 2] *
                                         S_[this->n_ - 3] -
                                     2 * S_[this->n_ - 2] * S_[this->n_ - 3]) *
                              S_[this->n_ - 2] +
-                         QLFCT::abs(S_[this->n_ - 2] - S_[this->n_ - 3]) * 2 *
+                         fabs(S_[this->n_ - 2] - S_[this->n_ - 3]) * 2 *
                              S_[this->n_ - 2] * S_[this->n_ - 3]) /
-                        (QLFCT::abs(4 * S_[this->n_ - 2] * S_[this->n_ - 2] *
+                        (fabs(4 * S_[this->n_ - 2] * S_[this->n_ - 2] *
                                         S_[this->n_ - 3] -
                                     2 * S_[this->n_ - 2] * S_[this->n_ - 3]) +
-                         QLFCT::abs(S_[this->n_ - 2] - S_[this->n_ - 3]));
+                         fabs(S_[this->n_ - 2] - S_[this->n_ - 3]));
                     break;
                 case CubicInterpolation_t<T>::Kruger:
                     // intermediate points
@@ -680,9 +680,9 @@ class CubicInterpolationImpl_t
             for (Size i = 0; i < this->n_; ++i) {
                 if (i == 0) {
                     if (tmp_[i] * S_[0] > 0.0) {
-                        correction = tmp_[i] / QLFCT::abs(tmp_[i]) *
-                                     std::min<T>(QLFCT::abs(tmp_[i]),
-                                                 QLFCT::abs(3.0 * S_[0]));
+                        correction = tmp_[i] / fabs(tmp_[i]) *
+                                     std::min<T>(fabs(tmp_[i]),
+                                                 fabs(3.0 * S_[0]));
                     } else {
                         correction = 0.0;
                     }
@@ -693,9 +693,9 @@ class CubicInterpolationImpl_t
                 } else if (i == this->n_ - 1) {
                     if (tmp_[i] * S_[this->n_ - 2] > 0.0) {
                         correction =
-                            tmp_[i] / QLFCT::abs(tmp_[i]) *
-                            std::min<T>(QLFCT::abs(tmp_[i]),
-                                        QLFCT::abs(3.0 * S_[this->n_ - 2]));
+                            tmp_[i] / fabs(tmp_[i]) *
+                            std::min<T>(fabs(tmp_[i]),
+                                        fabs(3.0 * S_[this->n_ - 2]));
                     } else {
                         correction = 0.0;
                     }
@@ -706,9 +706,9 @@ class CubicInterpolationImpl_t
                 } else {
                     pm = (S_[i - 1] * dx_[i] + S_[i] * dx_[i - 1]) /
                          (dx_[i - 1] + dx_[i]);
-                    M = 3.0 * QLFCT::min(QLFCT::min(QLFCT::abs(S_[i - 1]),
-                                                    QLFCT::abs(S_[i])),
-                                         QLFCT::abs(pm));
+                    M = 3.0 * fmin(fmin(fabs(S_[i - 1]),
+                                                    fabs(S_[i])),
+                                         fabs(pm));
                     if (i > 1) {
                         if ((S_[i - 1] - S_[i - 2]) * (S_[i] - S_[i - 1]) >
                             0.0) {
@@ -718,8 +718,8 @@ class CubicInterpolationImpl_t
                             if (pm * pd > 0.0 &&
                                 pm * (S_[i - 1] - S_[i - 2]) > 0.0) {
                                 M = std::max<T>(
-                                    M, 1.5 * QLFCT::min(QLFCT::abs(pm),
-                                                        QLFCT::abs(pd)));
+                                    M, 1.5 * fmin(fabs(pm),
+                                                        fabs(pd)));
                             }
                         }
                     }
@@ -731,14 +731,14 @@ class CubicInterpolationImpl_t
                             if (pm * pu > 0.0 &&
                                 -pm * (S_[i] - S_[i - 1]) > 0.0) {
                                 M = std::max<T>(
-                                    M, 1.5 * QLFCT::min(QLFCT::abs(pm),
-                                                        QLFCT::abs(pu)));
+                                    M, 1.5 * fmin(fabs(pm),
+                                                        fabs(pu)));
                             }
                         }
                     }
                     if (tmp_[i] * pm > 0.0) {
-                        correction = tmp_[i] / QLFCT::abs(tmp_[i]) *
-                                     QLFCT::min(QLFCT::abs(tmp_[i]), M);
+                        correction = tmp_[i] / fabs(tmp_[i]) *
+                                     fmin(fabs(tmp_[i]), M);
                     } else {
                         correction = 0.0;
                     }

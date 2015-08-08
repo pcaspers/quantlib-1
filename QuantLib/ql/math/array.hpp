@@ -616,7 +616,7 @@ template <class T>
 inline const Disposable<Array_t<T> > Abs(const Array_t<T> &v) {
     Array_t<T> result(v.size());
     for(Size i=0;i<v.size();++i)
-        result[i] = QLFCT::abs(v[i]);
+        result[i] = fabs(v[i]);
     return result;
 }
 
@@ -624,7 +624,7 @@ template <class T>
 inline const Disposable<Array_t<T> > Sqrt(const Array_t<T> &v) {
     Array_t<T> result(v.size());
     for(Size i=0;i<v.size();++i)
-        result[i] = QLFCT::sqrt(v[i]);
+        result[i] = sqrt(v[i]);
     return result;
 }
 
@@ -632,7 +632,7 @@ template <class T>
 inline const Disposable<Array_t<T> > Log(const Array_t<T> &v) {
     Array_t<T> result(v.size());
     for(Size i=0;i<v.size();++i)
-        result[i] = QLFCT::log(v[i]);
+        result[i] = log(v[i]);
     return result;
 }
 
@@ -640,7 +640,7 @@ template <class T>
 inline const Disposable<Array_t<T> > Exp(const Array_t<T> &v) {
     Array_t<T> result(v.size());
     for(Size i=0;i<v.size();++i)
-        result[i] = QLFCT::exp(v[i]);
+        result[i] = exp(v[i]);
     return result;
 }
 
@@ -648,7 +648,7 @@ template <class T>
 inline const Disposable<Array_t<T> > Pow(const Array_t<T> &v, T alpha) {
     Array_t<T> result(v.size());
     for(Size i=0;i<v.size();++i)
-        result[i] = QLFCT::pow(v[i],alpha);
+        result[i] = pow(v[i],alpha);
     return result;
 }
 

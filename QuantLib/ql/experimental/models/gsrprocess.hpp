@@ -149,7 +149,7 @@ template <class T> void GsrProcess_t<T>::flushCache() const {
     // flag is kept consistent, too
     for (int i = 0; i < (int)reversions_.size(); i++)
         // if (close(reversions_[i], 0.0))
-        if (QLFCT::abs(reversions_[i]) < 1E-4)
+        if (fabs(reversions_[i]) < 1E-4)
             revZero_[i] = true;
         else
             revZero_[i] = false;
@@ -172,7 +172,7 @@ T GsrProcess_t<T>::expectationp1(Time w, T xw, Time dt) const {
     T res2 = 1.0;
     for (int i = lowerIndex(w); i <= upperIndex(t) - 1; i++) {
         res2 *=
-            QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - flooredTime(i, w)));
+            exp(-rev(i) * (cappedTime(i + 1, t) - flooredTime(i, w)));
     }
     cache1_.insert(std::make_pair(key, res2));
     return res2 * xw;
@@ -203,13 +203,13 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
             else
                 res2 *= vol(l) * vol(l) / (2.0 * rev(l)) *
                         (1.0 -
-                         QLFCT::exp(-2.0 * rev(l) * (time2(l + 1) - time2(l))));
+                         exp(-2.0 * rev(l) * (time2(l + 1) - time2(l))));
             // zeta_i (i>k)
             for (int i = k + 1; i <= upperIndex(t) - 1; i++)
-                res2 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+                res2 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
             // beta_j (j<k)
             for (int j = l + 1; j <= k - 1; j++)
-                res2 *= QLFCT::exp(-2.0 * rev(j) * (time2(j + 1) - time2(j)));
+                res2 *= exp(-2.0 * rev(j) * (time2(j + 1) - time2(j)));
             // zeta_k beta_k
             if (revZero(k))
                 res2 *= 2.0 * time2(k) - flooredTime(k, w) -
@@ -217,9 +217,9 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
                         2.0 * (time2(k) - cappedTime(k + 1, t));
             else
                 res2 *=
-                    (QLFCT::exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
+                    (exp(rev(k) * (2.0 * time2(k) - flooredTime(k, w) -
                                           cappedTime(k + 1, t))) -
-                     QLFCT::exp(2.0 * rev(k) *
+                     exp(2.0 * rev(k) *
                                 (time2(k) - cappedTime(k + 1, t)))) /
                     rev(k);
             // add to sum
@@ -231,23 +231,23 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
         if (revZero(k))
             res2 *=
                 vol(k) * vol(k) / 4.0 *
-                (4.0 * QLFCT::pow(cappedTime(k + 1, t) - time2(k), 2.0) -
-                 (QLFCT::pow(flooredTime(k, w) - 2.0 * time2(k) +
+                (4.0 * pow(cappedTime(k + 1, t) - time2(k), 2.0) -
+                 (pow(flooredTime(k, w) - 2.0 * time2(k) +
                                  cappedTime(k + 1, t),
                              2.0) +
-                  QLFCT::pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0)));
+                  pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0)));
         else
             res2 *=
                 vol(k) * vol(k) / (2.0 * rev(k) * rev(k)) *
-                (QLFCT::exp(-2.0 * rev(k) * (cappedTime(k + 1, t) - time2(k))) +
+                (exp(-2.0 * rev(k) * (cappedTime(k + 1, t) - time2(k))) +
                  1.0 -
-                 (QLFCT::exp(-rev(k) * (flooredTime(k, w) - 2.0 * time2(k) +
+                 (exp(-rev(k) * (flooredTime(k, w) - 2.0 * time2(k) +
                                         cappedTime(k + 1, t))) +
-                  QLFCT::exp(-rev(k) *
+                  exp(-rev(k) *
                              (cappedTime(k + 1, t) - flooredTime(k, w)))));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++)
-            res2 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+            res2 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
         // no beta_j in this case ...
         res += res2;
     }
@@ -262,15 +262,15 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
             if (revZero(l))
                 res3 *= cappedTime(l + 1, T0) - time2(l);
             else
-                res3 *= (1.0 - QLFCT::exp(-rev(l) *
+                res3 *= (1.0 - exp(-rev(l) *
                                           (cappedTime(l + 1, T0) - time2(l)))) /
                         rev(l);
             // zeta_i (i>k)
             for (int i = k + 1; i <= upperIndex(t) - 1; i++)
-                res3 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+                res3 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
             // gamma_j (j>k)
             for (int j = k + 1; j <= l - 1; j++)
-                res3 *= QLFCT::exp(-rev(j) * (time2(j + 1) - time2(j)));
+                res3 *= exp(-rev(j) * (time2(j + 1) - time2(j)));
             // zeta_k gamma_k
             if (revZero(k))
                 res3 *= (cappedTime(k + 1, t) - time2(k + 1) -
@@ -278,9 +278,9 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
                           time2(k + 1))) /
                         2.0;
             else
-                res3 *= (QLFCT::exp(rev(k) *
+                res3 *= (exp(rev(k) *
                                     (cappedTime(k + 1, t) - time2(k + 1))) -
-                         QLFCT::exp(rev(k) *
+                         exp(rev(k) *
                                     (2.0 * flooredTime(k, w) -
                                      cappedTime(k + 1, t) - time2(k + 1)))) /
                         (2.0 * rev(k));
@@ -292,26 +292,26 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
         // eta_k zeta_k
         if (revZero(k))
             res3 *=
-                (-QLFCT::pow(cappedTime(k + 1, t) - cappedTime(k + 1, T0),
+                (-pow(cappedTime(k + 1, t) - cappedTime(k + 1, T0),
                              2.0) -
                  2.0 *
-                     QLFCT::pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0) +
-                 QLFCT::pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T0) -
+                     pow(cappedTime(k + 1, t) - flooredTime(k, w), 2.0) +
+                 pow(2.0 * flooredTime(k, w) - cappedTime(k + 1, T0) -
                                 cappedTime(k + 1, t),
                             2.0)) /
                 4.0;
         else
-            res3 *= (2.0 - QLFCT::exp(rev(k) * (cappedTime(k + 1, t) -
+            res3 *= (2.0 - exp(rev(k) * (cappedTime(k + 1, t) -
                                                 cappedTime(k + 1, T0))) -
-                     (2.0 * QLFCT::exp(-rev(k) * (cappedTime(k + 1, t) -
+                     (2.0 * exp(-rev(k) * (cappedTime(k + 1, t) -
                                                   flooredTime(k, w))) -
-                      QLFCT::exp(rev(k) * (2.0 * flooredTime(k, w) -
+                      exp(rev(k) * (2.0 * flooredTime(k, w) -
                                            cappedTime(k + 1, T0) -
                                            cappedTime(k + 1, t))))) /
                     (2.0 * rev(k) * rev(k));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++)
-            res3 *= QLFCT::exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+            res3 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
         // no gamma_j in this case ...
         res2 += res3;
         // add to main accumulator
@@ -325,7 +325,7 @@ template <class T> T GsrProcess_t<T>::expectationp2(Time w, Time dt) const {
 
 template <class T>
 T GsrProcess_t<T>::stdDeviation(Time t0, T x0, Time dt) const {
-    return QLFCT::sqrt(variance(t0, x0, dt));
+    return sqrt(variance(t0, x0, dt));
 }
 
 template <class T> T GsrProcess_t<T>::variance(Time w, T, Time dt) const {
@@ -348,13 +348,13 @@ template <class T> T GsrProcess_t<T>::variance(Time w, T, Time dt) const {
         if (revZero(k))
             res2 *= -(flooredTime(k, w) - cappedTime(k + 1, t));
         else
-            res2 *= (1.0 - QLFCT::exp(2.0 * rev(k) * (flooredTime(k, w) -
+            res2 *= (1.0 - exp(2.0 * rev(k) * (flooredTime(k, w) -
                                                       cappedTime(k + 1, t)))) /
                     (2.0 * rev(k));
         // zeta_i (i>k)
         for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
             res2 *=
-                QLFCT::exp(-2.0 * rev(i) * (cappedTime(i + 1, t) - time2(i)));
+                exp(-2.0 * rev(i) * (cappedTime(i + 1, t) - time2(i)));
         }
         res += res2;
     }
@@ -389,12 +389,12 @@ template <class T> T GsrProcess_t<T>::y(Time t) const {
         T res2 = 1.0;
         for (int j = i + 1; j <= upperIndex(t) - 1; j++) {
             res2 *=
-                QLFCT::exp(-2.0 * rev(j) * (cappedTime(j + 1, t) - time2(j)));
+                exp(-2.0 * rev(j) * (cappedTime(j + 1, t) - time2(j)));
         }
         res2 *= revZero(i)
                     ? vol(i) * vol(i) * (cappedTime(i + 1, t) - time2(i))
                     : (vol(i) * vol(i) / (2.0 * rev(i)) *
-                       (1.0 - QLFCT::exp(-2.0 * rev(i) *
+                       (1.0 - exp(-2.0 * rev(i) *
                                          (cappedTime(i + 1, t) - time2(i)))));
         res += res2;
     }
@@ -422,11 +422,11 @@ template <class T> T GsrProcess_t<T>::G(Time t, Time w, T) const {
     for (int i = lowerIndex(t); i <= upperIndex(w) - 1; i++) {
         T res2 = 1.0;
         for (int j = lowerIndex(t); j <= i - 1; j++) {
-            res2 *= QLFCT::exp(-rev(j) * (time2(j + 1) - flooredTime(j, t)));
+            res2 *= exp(-rev(j) * (time2(j + 1) - flooredTime(j, t)));
         }
         if (revZero(i))
             res2 *= cappedTime(i + 1, w) - flooredTime(i, t);
-        res2 *= (1.0 - QLFCT::exp(-rev(i) *
+        res2 *= (1.0 - exp(-rev(i) *
                                   (cappedTime(i + 1, w) - flooredTime(i, t)))) /
                 rev(i);
         res += res2;

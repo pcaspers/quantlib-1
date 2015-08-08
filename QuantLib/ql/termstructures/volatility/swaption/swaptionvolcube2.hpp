@@ -135,7 +135,7 @@ SwaptionVolCube2_t<T>::smileSectionImpl(const Date &optionDate,
     T atmForward = this->atmStrike(optionDate, swapTenor);
     T atmVol = this->atmVol_->volatility(optionDate, swapTenor, atmForward);
     Time optionTime = this->timeFromReference(optionDate);
-    T exerciseTimeSqrt = QLFCT::sqrt(optionTime);
+    T exerciseTimeSqrt = sqrt(optionTime);
     std::vector<T> strikes, stdDevs;
     strikes.reserve(this->nStrikes_);
     stdDevs.reserve(this->nStrikes_);

@@ -80,7 +80,7 @@ namespace QuantLib {
                 // Bisect if (out of range || not decreasing fast enough)
                 if ((((this->root_-xh)*dfroot-froot)*
                      ((this->root_-xl)*dfroot-froot) > 0.0)
-                    || (QLFCT::abs(2.0*froot) > QLFCT::abs(dxold*dfroot))) {
+                    || (fabs(2.0*froot) > fabs(dxold*dfroot))) {
 
                     dxold = dx;
                     dx = (xh-xl)/2.0;
@@ -91,7 +91,7 @@ namespace QuantLib {
                     this->root_ -= dx;
                 }
                 // Convergence criterion
-                if (QLFCT::abs(dx) < xAccuracy) {
+                if (fabs(dx) < xAccuracy) {
                     f(this->root_);
                     ++this->evaluationNumber_;
                     return this->root_;

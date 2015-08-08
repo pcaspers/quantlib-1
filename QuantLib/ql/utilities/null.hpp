@@ -63,19 +63,23 @@ template <> struct FloatingPointNull<false> {
 
 // default implementation for built-in types
 template <typename T> class Null {
+  private:
+    T val_;
+
   public:
-    Null() {}
-    operator T() const {
-        return T(detail::FloatingPointNull<
-                 boost::is_floating_point<T>::value>::nullValue());
-    }
+    Null()
+        : val_(detail::FloatingPointNull<
+               boost::is_floating_point<T>::value>::nullValue()) {}
+
+    operator const T &() const { return val_; }
 };
 
 #ifdef QLCPPAD
 template <class Base> class Null<CppAD::AD<Base> > {
   public:
     Null() {}
-    operator CppAD::AD<Base>() const {
+    operator const CppAD::AD<Base> &() const {
+
         return CppAD::AD<Base>(static_cast<Base>(Null<Base>()));
     }
     // this is needed, because in ad_assign.hpp line 124ff
@@ -84,15 +88,19 @@ template <class Base> class Null<CppAD::AD<Base> > {
     // T = Null<CppAD::AD<double>> we need to be able to convert
     // to double so that then conversion to AD<double> from this
     // works.
-    operator Base() const { return static_cast<Base>(Null<Base>()); }
+    operator const Base &() const { return static_cast<Base>(Null<Base>()); }
 };
 #endif
 
 #ifdef QLADOLC
 template <> class Null<adouble> {
+  private:
+    adouble val_;
+
   public:
-    Null() {}
-    operator adouble() const { return adouble(QL_NULL_REAL); }
+    Null() : val_(QL_NULL_REAL) {}
+
+    operator const adouble &() const { return val_; }
 };
 #endif
 }

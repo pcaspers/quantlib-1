@@ -67,13 +67,13 @@ namespace QuantLib {
         if (x == y)
             return true;
 
-        T diff = QLFCT::abs(x-y), tolerance = n * QL_EPSILON;
+        T diff = fabs(x-y), tolerance = n * QL_EPSILON;
 
         if (x * y == 0.0) // x or y = 0.0
             return diff < (tolerance * tolerance);
 
-        return diff <= tolerance*QLFCT::abs(x) &&
-               diff <= tolerance*QLFCT::abs(y);
+        return diff <= tolerance*fabs(x) &&
+               diff <= tolerance*fabs(y);
     }
 
     template<class T> inline bool close_enough(T x, T y) {
@@ -85,13 +85,13 @@ namespace QuantLib {
         if (x == y)
             return true;
 
-        T diff = QLFCT::abs(x-y), tolerance = n * QL_EPSILON;
+        T diff = fabs(x-y), tolerance = n * QL_EPSILON;
 
         if (x * y == 0.0) // x or y = 0.0
             return diff < (tolerance * tolerance);
 
-        return diff <= tolerance*QLFCT::abs(x) ||
-               diff <= tolerance*QLFCT::abs(y);
+        return diff <= tolerance*fabs(x) ||
+               diff <= tolerance*fabs(y);
     }
 
 

@@ -87,7 +87,7 @@ class Solver1D : public CuriouslyRecurringTemplate<Impl> {
         QL_REQUIRE(accuracy > 0.0, "accuracy (" << accuracy
                                                 << ") must be positive");
         // check whether we really want to use epsilon
-        accuracy = QLFCT::max<T>(accuracy, QL_EPSILON);
+        accuracy = fmax(accuracy, QL_EPSILON);
 
         const Real growthFactor = 1.6;
         Integer flipflop = -1;
@@ -119,10 +119,10 @@ class Solver1D : public CuriouslyRecurringTemplate<Impl> {
                 root_ = (xMax_ + xMin_) / 2.0;
                 return this->impl().solveImpl(f, accuracy);
             }
-            if (QLFCT::abs(fxMin_) < QLFCT::abs(fxMax_)) {
+            if (fabs(fxMin_) < fabs(fxMax_)) {
                 xMin_ = enforceBounds_(xMin_ + growthFactor * (xMin_ - xMax_));
                 fxMin_ = f(xMin_);
-            } else if (QLFCT::abs(fxMin_) > QLFCT::abs(fxMax_)) {
+            } else if (fabs(fxMin_) > fabs(fxMax_)) {
                 xMax_ = enforceBounds_(xMax_ + growthFactor * (xMax_ - xMin_));
                 fxMax_ = f(xMax_);
             } else if (flipflop == -1) {
@@ -164,7 +164,7 @@ class Solver1D : public CuriouslyRecurringTemplate<Impl> {
         QL_REQUIRE(accuracy > 0.0, "accuracy (" << accuracy
                                                 << ") must be positive");
         // check whether we really want to use epsilon
-        accuracy = QLFCT::max<T>(accuracy, QL_EPSILON);
+        accuracy = fmax(accuracy, QL_EPSILON);
 
         xMin_ = xMin;
         xMax_ = xMax;

@@ -127,13 +127,13 @@ template <class T> void BlackCapFloorEngine_t<T>::calculate() const {
             Date fixingDate = this->arguments_.fixingDates[i];
             Time sqrtTime = 0.0;
             if (fixingDate > today)
-                sqrtTime = QLFCT::sqrt(vol_->timeFromReference(fixingDate));
+                sqrtTime = sqrt(vol_->timeFromReference(fixingDate));
 
             if (type == CapFloor_t<T>::Cap || type == CapFloor_t<T>::Collar) {
                 T strike = this->arguments_.capRates[i];
                 if (sqrtTime > 0.0) {
                     stdDevs[i] =
-                        QLFCT::sqrt(vol_->blackVariance(fixingDate, strike));
+                        sqrt(vol_->blackVariance(fixingDate, strike));
                     vegas[i] = blackFormulaStdDevDerivative(strike, forward,
                                                             stdDevs[i], d,
                                                             displacement_) *
@@ -148,7 +148,7 @@ template <class T> void BlackCapFloorEngine_t<T>::calculate() const {
                 T floorletVega = 0.0;
                 if (sqrtTime > 0.0) {
                     stdDevs[i] =
-                        QLFCT::sqrt(vol_->blackVariance(fixingDate, strike));
+                        sqrt(vol_->blackVariance(fixingDate, strike));
                     floorletVega = blackFormulaStdDevDerivative(strike, forward,
                                                                 stdDevs[i], d,
                                                                 displacement_) *

@@ -708,7 +708,7 @@ std::vector<T> SwaptionVolCube1x_t<Model, T>::spreadVolInterpolation(
 
     for (Size k = 0; k < this->nStrikes_; k++) {
         const T strike =
-            QLFCT::max(atmForward + this->strikeSpreads_[k], cutoffStrike_);
+            fmax(atmForward + this->strikeSpreads_[k], cutoffStrike_);
         const T moneyness = atmForward / strike;
 
         Matrix_t<T> strikes(2, 2, 0.);

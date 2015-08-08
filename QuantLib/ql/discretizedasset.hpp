@@ -48,7 +48,7 @@ template <class T> class DiscretizedAsset_t {
     const Array_t<T> &values() const { return values_; }
     Array_t<T> &values() { return values_; }
 
-    const boost::shared_ptr<Lattice_t<T>> &method() const { return method_; }
+    const boost::shared_ptr<Lattice_t<T> > &method() const { return method_; }
     //@}
 
     /*! \name High-level interface
@@ -61,7 +61,7 @@ template <class T> class DiscretizedAsset_t {
 
         @{
     */
-    void initialize(const boost::shared_ptr<Lattice_t<T>> &, Time t);
+    void initialize(const boost::shared_ptr<Lattice_t<T> > &, Time t);
     void rollback(Time to);
     void partialRollback(Time to);
     T presentValue();
@@ -134,7 +134,7 @@ template <class T> class DiscretizedAsset_t {
     Array_t<T> values_;
 
   private:
-    boost::shared_ptr<Lattice_t<T>> method_;
+    boost::shared_ptr<Lattice_t<T> > method_;
 };
 
 typedef DiscretizedAsset_t<Real> DiscretizedAsset;
@@ -238,8 +238,7 @@ inline std::vector<Time> DiscretizedOption_t<T>::mandatoryTimes() const {
 template <class T>
 inline void DiscretizedOption_t<T>::applyExerciseCondition() {
     for (Size i = 0; i < this->values_.size(); i++)
-        this->values_[i] =
-            QLFCT::max(underlying_->values()[i], this->values_[i]);
+        this->values_[i] = fmax(underlying_->values()[i], this->values_[i]);
 }
 
 // implementation

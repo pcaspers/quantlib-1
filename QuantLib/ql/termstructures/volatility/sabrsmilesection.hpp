@@ -90,14 +90,14 @@ SabrSmileSection_t<T>::SabrSmileSection_t(const Date &d, T forward,
 }
 
 template <class T> T SabrSmileSection_t<T>::varianceImpl(T strike) const {
-    strike = QLFCT::max(T(0.00001), strike);
+    strike = fmax(T(0.00001), strike);
     T vol = unsafeSabrVolatility(strike, forward_, this->exerciseTime(), alpha_,
                                  beta_, nu_, rho_);
     return vol * vol * this->exerciseTime();
 }
 
 template <class T> T SabrSmileSection_t<T>::volatilityImpl(T strike) const {
-    strike = QLFCT::max(T(0.00001), strike);
+    strike = fmax(T(0.00001), strike);
     return unsafeSabrVolatility(strike, forward_, this->exerciseTime(), alpha_, beta_,
                                 nu_, rho_);
 }

@@ -202,14 +202,14 @@ template <class T> T InterestRate_t<T>::compoundFactor(Time t) const {
     case Simple:
         return 1.0 + r_ * t;
     case Compounded:
-        return QLFCT::pow(1.0 + r_ / freq_, freq_ * t);
+        return pow(1.0 + r_ / freq_, freq_ * t);
     case Continuous:
-        return QLFCT::exp(r_ * t);
+        return exp(r_ * t);
     case SimpleThenCompounded:
         if (t <= 1.0 / Real(freq_))
             return 1.0 + r_ * t;
         else
-            return QLFCT::pow(1.0 + r_ / freq_, freq_ * t);
+            return pow(1.0 + r_ / freq_, freq_ * t);
     default:
         QL_FAIL("unknown compounding convention");
     }
@@ -233,16 +233,16 @@ InterestRate_t<T> InterestRate_t<T>::impliedRate(T compound, const DayCounter &r
             r = (compound - 1.0) / t;
             break;
         case Compounded:
-            r = (QLFCT::pow(compound, 1.0 / (Real(freq) * t)) - 1.0) * Real(freq);
+            r = (pow(compound, 1.0 / (Real(freq) * t)) - 1.0) * Real(freq);
             break;
         case Continuous:
-            r = QLFCT::log(compound) / t;
+            r = log(compound) / t;
             break;
         case SimpleThenCompounded:
             if (t <= 1.0 / Real(freq))
                 r = (compound - 1.0) / t;
             else
-                r = (QLFCT::pow(compound, 1.0 / (Real(freq) * t)) - 1.0) * Real(freq);
+                r = (pow(compound, 1.0 / (Real(freq) * t)) - 1.0) * Real(freq);
             break;
         default:
             QL_FAIL("unknown compounding convention (" << Integer(comp) << ")");

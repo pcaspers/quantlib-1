@@ -232,7 +232,7 @@ bool MultiplicativePriceSeasonality_t<T>::isConsistent(
     for (Size i = 1; i < nTest; i++) {
         Real factorAt =
             this->seasonalityFactor(curveBaseDate + Period(i, Years));
-        QL_REQUIRE(QLFCT::abs(factorAt - factorBase) < eps,
+        QL_REQUIRE(fabs(factorAt - factorBase) < eps,
                    "seasonality is inconsistent with inflation term structure, "
                    "factors "
                        << factorBase << " and later factor " << factorAt << ", "
@@ -309,7 +309,7 @@ T MultiplicativePriceSeasonality_t<T>::seasonalityFactor(const Date &to) const {
         which = 0;
     } else {
         // days, weeks, months, years are the only time unit possibilities
-        Integer diffDays = static_cast<Integer>(QLFCT::abs(static_cast<double>(to - from))); // in days
+        Integer diffDays = static_cast<Integer>(fabs(static_cast<double>(to - from))); // in days
         Integer dir = 1;
         if (from > to)
             dir = -1;

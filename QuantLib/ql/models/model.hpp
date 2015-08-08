@@ -156,7 +156,8 @@ class CalibratedModel_t<T>::PrivateConstraint : public Constraint_t<T> {
   private:
     class Impl : public Constraint_t<T>::Impl {
       public:
-        Impl(const std::vector<Parameter_t<T>> &arguments) : arguments_(arguments) {}
+        Impl(const std::vector<Parameter_t<T> > &arguments)
+            : arguments_(arguments) {}
 
         bool test(const Array_t<T> &params) const {
             Size k = 0;
@@ -248,15 +249,14 @@ class CalibratedModel_t<T>::CalibrationFunction : public CostFunction_t<T> {
             T diff = instruments_[i]->calibrationError();
             value += diff * diff * weights_[i];
         }
-        return QLFCT::sqrt(value);
+        return sqrt(value);
     }
 
     virtual Disposable<Array_t<T> > values(const Array_t<T> &params) const {
         model_->setParams(projection_.include(params));
         Array_t<T> values(instruments_.size());
         for (Size i = 0; i < instruments_.size(); i++) {
-            values[i] =
-                instruments_[i]->calibrationError() * QLFCT::sqrt(weights_[i]);
+            values[i] = instruments_[i]->calibrationError() * sqrt(weights_[i]);
         }
         // std::cout << "lm step;";
         // for(Size i=0;i<params.size();++i)

@@ -130,8 +130,8 @@ template <class T> void BlackSwaptionEngine_t<T>::calculate() const {
     // Therefore, any spread on the floating leg must be removed
     // with a corresponding correction on the fixed leg.
     if (swap.spread() != 0.0) {
-        T correction = swap.spread() *
-                       QLFCT::abs(swap.floatingLegBPS() / swap.fixedLegBPS());
+        T correction =
+            swap.spread() * fabs(swap.floatingLegBPS() / swap.fixedLegBPS());
         strike -= correction;
         atmForward -= correction;
         this->results_.additionalResults["spreadCorrection"] = correction;
@@ -147,18 +147,19 @@ template <class T> void BlackSwaptionEngine_t<T>::calculate() const {
     T annuity;
     switch (this->arguments_.settlementType) {
     case Settlement::Physical: {
-        annuity = QLFCT::abs(swap.fixedLegBPS()) / basisPoint;
+        annuity = fabs(swap.fixedLegBPS()) / basisPoint;
         break;
     }
     case Settlement::Cash: {
         const typename Leg_t<T>::Type &fixedLeg = swap.fixedLeg();
-        boost::shared_ptr<FixedRateCoupon_t<T>> firstCoupon =
-            boost::dynamic_pointer_cast<FixedRateCoupon_t<T>>(fixedLeg[0]);
+        boost::shared_ptr<FixedRateCoupon_t<T> > firstCoupon =
+            boost::dynamic_pointer_cast<FixedRateCoupon_t<T> >(fixedLeg[0]);
         DayCounter dayCount = firstCoupon->dayCounter();
-        T fixedLegCashBPS = CashFlows::bps(
-            fixedLeg, InterestRate_t<T>(atmForward, dayCount, Compounded, Annual),
-            false, discountCurve_->referenceDate());
-        annuity = QLFCT::abs(fixedLegCashBPS / basisPoint);
+        T fixedLegCashBPS =
+            CashFlows::bps(fixedLeg, InterestRate_t<T>(atmForward, dayCount,
+                                                       Compounded, Annual),
+                           false, discountCurve_->referenceDate());
+        annuity = fabs(fixedLegCashBPS / basisPoint);
         break;
     }
     default:
@@ -173,7 +174,7 @@ template <class T> void BlackSwaptionEngine_t<T>::calculate() const {
     this->results_.additionalResults["swapLength"] = swapLength;
 
     T variance = vol_->blackVariance(exerciseDate, swapLength, strike);
-    T stdDev = QLFCT::sqrt(variance);
+    T stdDev = sqrt(variance);
     this->results_.additionalResults["stdDev"] = stdDev;
     Option::Type w = (this->arguments_.type == VanillaSwap_t<T>::Payer)
                          ? Option::Call
@@ -182,10 +183,10 @@ template <class T> void BlackSwaptionEngine_t<T>::calculate() const {
         blackFormula(w, strike, atmForward, stdDev, annuity, displacement_);
 
     Time exerciseTime = vol_->timeFromReference(exerciseDate);
-    this->results_.additionalResults["vega"] = T(
-        QLFCT::sqrt(exerciseTime) *
-        blackFormulaStdDevDerivative(strike, atmForward, stdDev, annuity,
-                                     displacement_));
+    this->results_.additionalResults["vega"] =
+        T(sqrt(exerciseTime) * blackFormulaStdDevDerivative(strike, atmForward,
+                                                            stdDev, annuity,
+                                                            displacement_));
 }
 }
 

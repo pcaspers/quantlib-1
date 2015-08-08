@@ -103,8 +103,8 @@ template <class T> T CumulativeNormalDistribution_t<T>::operator()(T z) const {
             sum -= a;
             g *= y;
             i += 1.0;
-            a = QLFCT::abs(a);
-        } while (lasta > a && a >= QLFCT::abs(sum * QL_EPSILON));
+            a = fabs(a);
+        } while (lasta > a && a >= fabs(sum * QL_EPSILON));
         result = -gaussian_(z) / z * sum;
     }
     return result;
@@ -160,7 +160,7 @@ class InverseCumulativeNormal : public std::unary_function<Real, Real> {
 #ifdef REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
         // error (f_(z) - x) divided by the cumulative's derivative
         const Real r =
-            (f_(z) - x) * M_SQRT2 * M_SQRTPI * QLFCT::exp(0.5 * z * z);
+            (f_(z) - x) * M_SQRT2 * M_SQRTPI * exp(0.5 * z * z);
         //  Halley's method
         z -= r / (1 + 0.5 * z * r);
 #endif
@@ -309,7 +309,7 @@ template <class T> inline T NormalDistribution_t<T>::operator()(T x) const {
     if (exponent <= -690.0)
         return 0.0; // exp(x) < 1.0e-300 anyway
     else
-        return normalizationFactor_ * QLFCT::exp(exponent);
+        return normalizationFactor_ * exp(exponent);
 }
 
 template <class T> inline T NormalDistribution_t<T>::derivative(T x) const {

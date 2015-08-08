@@ -149,14 +149,14 @@ T SmileSection_t<T>::optionPrice(T strike, Option::Type type,
     if (fabs(strike) < QL_EPSILON)
         tmp = 0.2;
     else
-        tmp = QLFCT::sqrt(T(variance(strike)));
+        tmp = sqrt(T(variance(strike)));
     return blackFormula(type, strike, atm, tmp, discount);
 }
 
 template <class T>
 T SmileSection_t<T>::digitalOptionPrice(T strike, Option::Type type, T discount,
                                         T gap) const {
-    T kl = QLFCT::max(strike - gap / 2.0, T(0.0));
+    T kl = fmax(strike - gap / 2.0, T(0.0));
     T kr = kl + gap;
     return (type == Option::Call ? 1.0 : -1.0) *
            (optionPrice(kl, type, discount) - optionPrice(kr, type, discount)) /
@@ -165,7 +165,7 @@ T SmileSection_t<T>::digitalOptionPrice(T strike, Option::Type type, T discount,
 
 template <class T>
 T SmileSection_t<T>::density(T strike, T discount, T gap) const {
-    T kl = QLFCT::max(strike - gap / 2.0, T(0.0));
+    T kl = fmax(strike - gap / 2.0, T(0.0));
     T kr = kl + gap;
     return (digitalOptionPrice(kl, Option::Call, discount, gap) -
             digitalOptionPrice(kr, Option::Call, discount, gap)) /
@@ -176,7 +176,7 @@ template <class T> T SmileSection_t<T>::vega(T strike, T discount) const {
     T atm = atmLevel();
     QL_REQUIRE(atm != Null<T>(),
                "smile section must provide atm level to compute option price");
-    return blackFormulaVolDerivative(strike, atm, QLFCT::sqrt(T(variance(strike))),
+    return blackFormulaVolDerivative(strike, atm, T(sqrt(T(variance(strike)))),
                                      exerciseTime(), discount) *
            0.01;
 }

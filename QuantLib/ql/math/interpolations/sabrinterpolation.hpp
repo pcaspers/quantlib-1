@@ -66,15 +66,16 @@ template <class T> struct SABRSpecs_t {
         if (params[0] == Null<T>())
             // adapt alpha to beta level
             params[0] =
-                0.2 * (params[1] < 0.9999 ? QLFCT::pow(forward, 1.0 - params[1])
-                                          : 1.0);
+                0.2 *
+                (params[1] < 0.9999 ? pow(forward, 1.0 - params[1]) : 1.0);
         if (params[2] == Null<T>())
-            params[2] = QLFCT::sqrt(0.4);
+            params[2] = sqrt(0.4);
         if (params[3] == Null<T>())
             params[3] = 0.0;
     }
     void guess(Array_t<T> &values, const std::vector<bool> &paramIsFixed,
-               const T &forward, const Time expiryTime, const std::vector<T> &r) {
+               const T &forward, const Time expiryTime,
+               const std::vector<T> &r) {
         Size j = 0;
         if (!paramIsFixed[1])
             values[1] = (1.0 - 2E-6) * r[j++] + 1E-6;
@@ -82,7 +83,7 @@ template <class T> struct SABRSpecs_t {
             values[0] = (1.0 - 2E-6) * r[j++] + 1E-6; // lognormal vol guess
             // adapt this to beta level
             if (values[1] < 0.999)
-                values[0] *= QLFCT::pow(forward, 1.0 - values[1]);
+                values[0] *= pow(forward, 1.0 - values[1]);
         }
         if (!paramIsFixed[2])
             values[2] = 1.5 * r[j++] + 1E-6;
@@ -95,29 +96,26 @@ template <class T> struct SABRSpecs_t {
     Array_t<T> inverse(const Array_t<T> &y, const std::vector<bool> &,
                        const std::vector<T> &, const T) {
         Array_t<T> x(4);
-        x[0] = y[0] < 25.0 + eps1() ? QLFCT::sqrt(y[0] - eps1())
+        x[0] = y[0] < 25.0 + eps1() ? sqrt(y[0] - eps1())
                                     : (y[0] - eps1() + 25.0) / 10.0;
         // y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor();
-        x[1] = QLFCT::sqrt(-QLFCT::log(y[1]));
-        x[2] = y[2] < 25.0 + eps1() ? QLFCT::sqrt(y[2] - eps1())
+        x[1] = sqrt(-log(y[1]));
+        x[2] = y[2] < 25.0 + eps1() ? sqrt(y[2] - eps1())
                                     : (y[2] - eps1() + 25.0) / 10.0;
-        x[3] = QLFCT::asin(y[3] / eps2());
+        x[3] = asin(y[3] / eps2());
         return x;
     }
     Array_t<T> direct(const Array_t<T> &x, const std::vector<bool> &,
                       const std::vector<T> &, const T) {
         Array_t<T> y(4);
-        y[0] = QLFCT::abs(x[0]) < 5.0 ? x[0] * x[0] + eps1()
-                                     : (10.0 * QLFCT::abs(x[0]) - 25.0) + eps1();
+        y[0] = fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1()
+                                : (10.0 * fabs(x[0]) - 25.0) + eps1();
         // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
-        y[1] = QLFCT::abs(x[1]) < QLFCT::sqrt(-QLFCT::log(eps1()))
-                   ? QLFCT::exp(-(x[1] * x[1]))
-                   : eps1();
-        y[2] = QLFCT::abs(x[2]) < 5.0 ? x[2] * x[2] + eps1()
-                                     : (10.0 * QLFCT::abs(x[2]) - 25.0) + eps1();
-        y[3] = QLFCT::abs(x[3]) < 2.5 * M_PI
-                   ? eps2() * QLFCT::sin(x[3])
-                   : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
+        y[1] = fabs(x[1]) < sqrt(-log(eps1())) ? exp(-(x[1] * x[1])) : eps1();
+        y[2] = fabs(x[2]) < 5.0 ? x[2] * x[2] + eps1()
+                                : (10.0 * fabs(x[2]) - 25.0) + eps1();
+        y[3] = fabs(x[3]) < 2.5 * M_PI ? eps2() * sin(x[3])
+                                       : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
         return y;
     }
     typedef SABRWrapper_t<T> type;
@@ -169,7 +167,9 @@ template <class T> class SABRInterpolation_t : public Interpolation_t<T> {
     const std::vector<T> &interpolationWeights() const {
         return coeffs_->weights_;
     }
-    typename EndCriteria_t<T>::Type endCriteria() { return coeffs_->XABREndCriteria_; }
+    typename EndCriteria_t<T>::Type endCriteria() {
+        return coeffs_->XABREndCriteria_;
+    }
 
   private:
     boost::shared_ptr<detail::XABRCoeffHolder_t<detail::SABRSpecs_t, T> >
@@ -184,10 +184,10 @@ template <class T> class SABR {
     SABR(Time t, T forward, T alpha, T beta, T nu, T rho, bool alphaIsFixed,
          bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
          bool vegaWeighted = false,
-         const boost::shared_ptr<EndCriteria_t<T>> endCriteria =
-             boost::shared_ptr<EndCriteria_t<T>>(),
-         const boost::shared_ptr<OptimizationMethod_t<T>> optMethod =
-             boost::shared_ptr<OptimizationMethod_t<T>>(),
+         const boost::shared_ptr<EndCriteria_t<T> > endCriteria =
+             boost::shared_ptr<EndCriteria_t<T> >(),
+         const boost::shared_ptr<OptimizationMethod_t<T> > optMethod =
+             boost::shared_ptr<OptimizationMethod_t<T> >(),
          const T errorAccept = 0.0020, const bool useMaxError = false,
          const Size maxGuesses = 50)
         : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu),
@@ -212,8 +212,8 @@ template <class T> class SABR {
     T alpha_, beta_, nu_, rho_;
     bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
     bool vegaWeighted_;
-    const boost::shared_ptr<EndCriteria_t<T>> endCriteria_;
-    const boost::shared_ptr<OptimizationMethod_t<T>> optMethod_;
+    const boost::shared_ptr<EndCriteria_t<T> > endCriteria_;
+    const boost::shared_ptr<OptimizationMethod_t<T> > optMethod_;
     const T errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

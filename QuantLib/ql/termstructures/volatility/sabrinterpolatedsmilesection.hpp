@@ -97,7 +97,7 @@ class SabrInterpolatedSmileSection_t : public SmileSection_t<T>,
   protected:
     //! Creates the mutable SABRInterpolation
     void createInterpolation() const;
-    mutable boost::shared_ptr<SABRInterpolation_t<T>> sabrInterpolation_;
+    mutable boost::shared_ptr<SABRInterpolation_t<T> > sabrInterpolation_;
 
     //! Market data
     const Handle<Quote_t<T> > forward_;
@@ -247,9 +247,9 @@ template <class T>
 void SabrInterpolatedSmileSection_t<T>::createInterpolation() const {
     boost::shared_ptr<SABRInterpolation_t<T> > tmp(new SABRInterpolation_t<T>(
         actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
-        this->exerciseTime(), forwardValue_, alpha_, beta_, nu_, rho_, isAlphaFixed_,
-        isBetaFixed_, isNuFixed_, isRhoFixed_, vegaWeighted_, endCriteria_,
-        method_));
+        this->exerciseTime(), forwardValue_, alpha_, beta_, nu_, rho_,
+        isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_, vegaWeighted_,
+        endCriteria_, method_));
     swap(tmp, sabrInterpolation_);
 }
 

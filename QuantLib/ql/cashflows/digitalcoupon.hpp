@@ -466,7 +466,7 @@ template <class T> T DigitalCoupon_t<T>::callPayoff() const {
             payoff = isCallCashOrNothing_ ? callDigitalPayoff_ : underlyingRate;
         } else {
             if (isCallATMIncluded_) {
-                if (QLFCT::abs(callStrike_ - underlyingRate) <= 1.e-16)
+                if (fabs(callStrike_ - underlyingRate) <= 1.e-16)
                     payoff = isCallCashOrNothing_ ? callDigitalPayoff_
                                                   : underlyingRate;
             }

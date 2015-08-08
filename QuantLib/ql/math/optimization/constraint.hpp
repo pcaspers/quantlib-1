@@ -170,7 +170,7 @@ template <class T> class CompositeConstraint_t : public Constraint_t<T> {
             Array_t<T> c2ub = c2_.upperBound(params);
             Array_t<T> rtrnArray(c1ub.size(), 0.0);
             for (Size iter = 0; iter < c1ub.size(); iter++) {
-                rtrnArray.at(iter) = QLFCT::min(c1ub.at(iter), c2ub.at(iter));
+                rtrnArray.at(iter) = fmin(c1ub.at(iter), c2ub.at(iter));
             }
             return rtrnArray;
         }
@@ -179,7 +179,7 @@ template <class T> class CompositeConstraint_t : public Constraint_t<T> {
             Array_t<T> c2lb = c2_.lowerBound(params);
             Array_t<T> rtrnArray(c1lb.size(), 0.0);
             for (Size iter = 0; iter < c1lb.size(); iter++) {
-                rtrnArray.at(iter) = QLFCT::max(c1lb.at(iter), c2lb.at(iter));
+                rtrnArray.at(iter) = fmax(c1lb.at(iter), c2lb.at(iter));
             }
             return rtrnArray;
         }

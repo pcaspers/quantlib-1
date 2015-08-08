@@ -124,7 +124,7 @@ EndCriteria_t<T>::EndCriteria_t(Size maxIterations,
       gradientNormEpsilon_(gradientNormEpsilon) {
 
     if (maxStationaryStateIterations_ == Null<Size>())
-        maxStationaryStateIterations_ = QLFCT::min<double>(
+        maxStationaryStateIterations_ = fmin(
             static_cast<Size>(maxIterations / 2), static_cast<Size>(100));
     QL_REQUIRE(maxStationaryStateIterations_ > 1,
                "maxStationaryStateIterations_ ("
@@ -152,7 +152,7 @@ template <class T>
 bool EndCriteria_t<T>::checkStationaryPoint(
     const T xOld, const T xNew, Size &statStateIterations,
     typename EndCriteria_t<T>::Type &ecType) const {
-    if (QLFCT::abs(xNew - xOld) >= rootEpsilon_) {
+    if (fabs(xNew - xOld) >= rootEpsilon_) {
         statStateIterations = 0;
         return false;
     }
@@ -167,7 +167,7 @@ template <class T>
 bool EndCriteria_t<T>::checkStationaryFunctionValue(
     const T fxOld, const T fxNew, Size &statStateIterations,
     typename EndCriteria_t<T>::Type &ecType) const {
-    if (QLFCT::abs(fxNew - fxOld) >= functionEpsilon_) {
+    if (fabs(fxNew - fxOld) >= functionEpsilon_) {
         statStateIterations = 0;
         return false;
     }
@@ -195,7 +195,7 @@ bool EndCriteria_t<T>::checkStationaryFunctionAccuracy(
 //                                        const T gNormNew,
 //                                        typename EndCriteria_t<T>::Type&
 //                                        ecType) const {
-//    if (QLFCT::abs(gNormNew-gNormOld) >= gradientNormEpsilon_)
+//    if (fabs(gNormNew-gNormOld) >= gradientNormEpsilon_)
 //        return false;
 //    ecType = StationaryGradient;
 //    return true;
