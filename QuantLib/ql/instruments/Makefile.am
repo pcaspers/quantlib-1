@@ -27,8 +27,6 @@ this_include_HEADERS = \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
     fixedratebondforward.hpp \
-    floatfloatswap.hpp \
-    floatfloatswaption.hpp \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
@@ -44,7 +42,6 @@ this_include_HEADERS = \
     makeyoyinflationcapfloor.hpp \
     multiassetoption.hpp \
     nonstandardswap.hpp \
-    nonstandardswaption.hpp \
     oneassetoption.hpp \
     overnightindexedswap.hpp \
     payoffs.hpp \
@@ -83,8 +80,6 @@ libInstruments_la_SOURCES = \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
     fixedratebondforward.cpp \
-    floatfloatswap.cpp \
-    floatfloatswaption.cpp \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
@@ -100,7 +95,6 @@ libInstruments_la_SOURCES = \
     makeyoyinflationcapfloor.cpp \
     multiassetoption.cpp \
     nonstandardswap.cpp \
-    nonstandardswaption.cpp \
     oneassetoption.cpp \
     overnightindexedswap.cpp \
     payoffs.cpp \

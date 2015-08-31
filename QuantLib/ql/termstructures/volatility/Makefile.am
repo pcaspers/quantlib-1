@@ -11,7 +11,6 @@ this_include_HEADERS = \
     atmadjustedsmilesection.hpp \
     atmsmilesection.hpp \
     flatsmilesection.hpp \
-    gaussian1dsmilesection.hpp \
     interpolatedsmilesection.hpp \
     kahalesmilesection.hpp \
     sabr.hpp \
@@ -30,7 +29,6 @@ libVolTermStructures_la_SOURCES = \
     atmadjustedsmilesection.cpp \
     atmsmilesection.cpp \
     flatsmilesection.cpp \
-    gaussian1dsmilesection.cpp \
     kahalesmilesection.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \

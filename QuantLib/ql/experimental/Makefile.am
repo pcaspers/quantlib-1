@@ -4,7 +4,7 @@ SUBDIRS = amortizingbonds barrieroption callablebonds catbonds \
           commodities convertiblebonds coupons credit \
           exoticoptions finitedifferences fx inflation lattices \
           math mcbasket models processes risk shortrate swaptions \
-          variancegamma varianceoption volatility xva
+          variancegamma varianceoption volatility
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -37,8 +37,7 @@ libExperimental_la_LIBADD = \
     swaptions/libSwaptions.la \
     variancegamma/libVarianceGamma.la \
     varianceoption/libVarianceOption.la \
-    volatility/libVolatility.la \
-    xva/libXva.la
+    volatility/libVolatility.la
 
 noinst_LTLIBRARIES = libExperimental.la
 

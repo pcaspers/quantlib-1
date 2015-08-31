@@ -35,7 +35,7 @@ namespace QuantLib {
 
 //! One factor gsr model, formulation is in forward measure
 
-class Gsr : public Gaussian1dModel, public CalibratedModel {
+class Gsr : public Gaussian1dModel<Gsr>, public CalibratedModel {
 
   public:
     // constant mean reversion
@@ -190,7 +190,6 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         }
     }
 
-  protected:
     const Real numeraireImpl(const Time t, const Real y,
                              const Handle<YieldTermStructure> &yts) const;
 
@@ -198,6 +197,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
                             const Handle<YieldTermStructure> &yts,
                             const bool adjusted) const;
 
+  protected:
     void generateArguments() {
         boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
         boost::static_pointer_cast<GsrProcess>(adjustedStateProcess_)

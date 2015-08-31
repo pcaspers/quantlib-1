@@ -4,7 +4,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    adjusterhelper.hpp \
     betaeta.hpp \
     betaetacore.hpp \
     betaetaswaptionengine.hpp \
@@ -24,14 +23,11 @@ this_include_HEADERS = \
 	lgmstateprocess.hpp \
 	lgmpiecewisealphaconstantkappa.hpp \
     longstaffschwartzproxypathpricer.hpp \
-    mcgaussian1dnonstandardswaptionengine.hpp \
-    proxynonstandardswaptionengine.hpp \
     quadraticlfm.hpp \
     sbsmilesection.hpp \
     splinedensitysmilesection.hpp
 
 libModels_la_SOURCES = \
-    adjusterhelper.cpp \
     betaeta.cpp \
     betaetacore.cpp \
     betaetaswaptionengine.cpp \
@@ -45,8 +41,6 @@ libModels_la_SOURCES = \
 	lgmfxpiecewisesigma.cpp \
 	lgmpiecewisealphaconstantkappa.cpp \
     longstaffschwartzproxypathpricer.cpp \
-    mcgaussian1dnonstandardswaptionengine.cpp \
-    proxynonstandardswaptionengine.cpp \
     quadraticlfm.cpp \
     sbsmilesection.cpp \
     splinedensitysmilesection.cpp

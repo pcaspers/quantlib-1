@@ -52,7 +52,7 @@ namespace QuantLib {
        calibration curve setup. Finally the discountCurve given in the constructor
        should be the same curve as the discounting curve of the swapIndex used to
        determine the calibration basket. */
-
+    
     class BasketGeneratingEngine {
 
       public:

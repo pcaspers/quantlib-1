@@ -3,7 +3,6 @@
 
 #include <ql/termstructures/volatility/swaption/cmsmarket.hpp>
 #include <ql/termstructures/volatility/swaption/cmsmarketcalibration.hpp>
-#include <ql/termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp>
 #include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionsinglesabrvol.hpp>

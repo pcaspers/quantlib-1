@@ -17,7 +17,6 @@ libOneFactorModels_la_SOURCES = \
     blackkarasinski.cpp \
     coxingersollross.cpp \
     extendedcoxingersollross.cpp \
-    gaussian1dmodel.cpp \
     gsr.cpp \
     hullwhite.cpp \
     markovfunctional.cpp \

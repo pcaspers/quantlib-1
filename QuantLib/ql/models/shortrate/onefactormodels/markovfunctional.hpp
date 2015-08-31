@@ -94,7 +94,7 @@ namespace QuantLib {
       bound of the shifted distribution.
 */
 
-    class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
+    class MarkovFunctional : public Gaussian1dModel<MarkovFunctional>, public CalibratedModel {
 
       public:
         struct ModelSettings {
@@ -323,14 +323,14 @@ namespace QuantLib {
             this->update();
         }
 
-      protected:
-
         const Real numeraireImpl(const Time t, const Real y,
                                  const Handle<YieldTermStructure> &yts) const;
 
         const Real zerobondImpl(const Time T, const Time t, const Real y,
                                 const Handle<YieldTermStructure> &yts,
                                 const bool adjusted) const;
+
+      protected:
 
         void generateArguments() {
             // if calculate triggers performCalculations, updateNumeraireTabulations

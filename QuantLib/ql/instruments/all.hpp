@@ -22,8 +22,6 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
-#include <ql/instruments/floatfloatswap.hpp>
-#include <ql/instruments/floatfloatswaption.hpp>
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
@@ -39,7 +37,6 @@
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
-#include <ql/instruments/nonstandardswaption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/payoffs.hpp>
