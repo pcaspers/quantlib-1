@@ -92,15 +92,18 @@ namespace {
         SavedSettings backup;
         IndexHistoryCleaner cleaner;
 
+        CommonVars() { }
+
         // setup
-        CommonVars() {
+        static CommonVars UKVars() {
+            CommonVars uk;
             // usual setup
-            calendar = UnitedKingdom();
-            convention = ModifiedFollowing;
+            uk.calendar = UnitedKingdom();
+            uk.convention = ModifiedFollowing;
             Date today(25, November, 2009);
-            evaluationDate = calendar.adjust(today);
-            Settings::instance().evaluationDate() = evaluationDate;
-            dayCounter = ActualActual();
+            uk.evaluationDate = uk.calendar.adjust(today);
+            Settings::instance().evaluationDate() = uk.evaluationDate;
+            uk.dayCounter = ActualActual();
 
             Date from(20, July, 2007);
             Date to(20, November, 2009);
@@ -111,7 +114,7 @@ namespace {
                 .withConvention(ModifiedFollowing);
 
             bool interp = false;
-            ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, cpiTS));
+            uk.ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, uk.cpiTS));
 
             Real fixData[] = {
                 206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
@@ -121,14 +124,14 @@ namespace {
                 212.8, 213.4, 213.4, 213.4, 214.4
             };
             for (Size i=0; i<LENGTH(fixData); ++i) {
-                ii->addFixing(rpiSchedule[i], fixData[i]);
+                uk.ii->addFixing(rpiSchedule[i], fixData[i]);
             }
 
-            yTS.linkTo(boost::shared_ptr<YieldTermStructure>(
-                          new FlatForward(evaluationDate, 0.05, dayCounter)));
+            uk.yTS.linkTo(boost::shared_ptr<YieldTermStructure>(
+                          new FlatForward(uk.evaluationDate, 0.05, uk.dayCounter)));
 
             // now build the zero inflation curve
-            observationLag = Period(2,Months);
+            uk.observationLag = Period(2,Months);
 
             Datum zciisData[] = {
                 { Date(25, November, 2010), 3.0495 },
@@ -151,15 +154,17 @@ namespace {
             };
 
             std::vector<boost::shared_ptr<Helper> > helpers =
-                makeHelpers(zciisData, LENGTH(zciisData), ii,
-                            observationLag, calendar, convention, dayCounter);
+                makeHelpers(zciisData, LENGTH(zciisData), uk.ii,
+                    uk.observationLag, uk.calendar, uk.convention, uk.dayCounter);
 
             Rate baseZeroRate = zciisData[0].rate/100.0;
-            cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>(
+            uk.cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>(
                   new PiecewiseZeroInflationCurve<Linear>(
-                         evaluationDate, calendar, dayCounter, observationLag,
-                         ii->frequency(),ii->interpolated(), baseZeroRate,
-                         Handle<YieldTermStructure>(yTS), helpers)));
+                      uk.evaluationDate, uk.calendar, uk.dayCounter, uk.observationLag,
+                      uk.ii->frequency(), uk.ii->interpolated(), baseZeroRate,
+                         Handle<YieldTermStructure>(uk.yTS), helpers)));
+
+            return uk;
         }
 
         // teardown
@@ -173,7 +178,7 @@ namespace {
 
 
 void InflationCPIBondTest::testCleanPrice() {
-    CommonVars common;
+    CommonVars common = CommonVars::UKVars();
 
     Real notional = 1000000.0;
     std::vector<Rate> fixedRates(1, 0.1);
