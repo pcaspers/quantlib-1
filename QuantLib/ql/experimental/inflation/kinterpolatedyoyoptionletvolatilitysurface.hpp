@@ -178,7 +178,11 @@ namespace QuantLib {
     updateSlice(const Date &d) const {
 
         if (!lastDateisSet_ || d != lastDate_ ) {
-            slice_ = yoyOptionletStripper_->slice(d);
+            // since slice expects the maturity and not the fixing date
+            // we have to add the observation lag here.
+            // TODO how to handle a different observation lag passed
+            // directly in a calling volatlity method ?
+            slice_ = yoyOptionletStripper_->slice(d + this->observationLag());
 
             tempKinterpolation_ =
                 factory1D_.interpolate( slice_.first.begin(),
