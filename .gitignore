@@ -185,6 +185,7 @@ QuantLib/Examples/Repo/Repo
 QuantLib/Examples/Swap/SwapValuation
 QuantLib/Examples/SviSmileSection/SviSmileSection
 QuantLib/Examples/Volaswap/Volaswap
+QuantLib/Examples/cmsso
 QuantLib/Examples/crosscurrencylgm
 QuantLib/Examples/fxtarf
 QuantLib/Examples/fxtarf_simple
