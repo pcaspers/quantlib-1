@@ -159,6 +159,7 @@ BROWSE
 
 # Outputs
 QuantLib/Examples/AdjointSwapDeltas/AdjointSwapDeltas
+QuantLib/Examples/AdjointGsr/AdjointGsr
 QuantLib/Examples/AswZSpreads/AswZSpreads
 QuantLib/Examples/BasketLosses/BasketLosses
 QuantLib/Examples/BermudanSwaption/BermudanSwaption
