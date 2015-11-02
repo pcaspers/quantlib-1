@@ -4,6 +4,16 @@ using namespace QuantLib;
 
 int main() {
 
+    double sigma = atof(getenv("SIGMA"));
+    double shift = atof(getenv("SHIFT"));
+    double rho = atof(getenv("RHO"));
+    int normal = atoi(getenv("NORMAL"));
+    double cap = Null<Real>(), floor = Null<Real>();
+    if (getenv("CAP") != NULL)
+        cap = atof(getenv("CAP"));
+    if (getenv("FLOOR") != NULL)
+        floor = atof(getenv("FLOOR"));
+
     Date refDate(30, October, 2015);
     Settings::instance().evaluationDate() = refDate;
 
@@ -20,11 +30,19 @@ int main() {
     boost::shared_ptr<SwapSpreadIndex> cms10y_2y =
         boost::make_shared<SwapSpreadIndex>("dummy", cms10y, cms2y);
 
-    Handle<SwaptionVolatilityStructure> vol(
-        boost::make_shared<ConstantSwaptionVolatility>(
+    RelinkableHandle<SwaptionVolatilityStructure> vol;
+
+    if (normal == 0) {
+        vol.linkTo(boost::make_shared<ConstantSwaptionVolatility>(
             refDate, TARGET(), ModifiedFollowing,
-            Handle<Quote>(boost::make_shared<SimpleQuote>(0.20)),
-            Actual365Fixed(), ShiftedLognormal, 0.0));
+            Handle<Quote>(boost::make_shared<SimpleQuote>(sigma)),
+            Actual365Fixed(), ShiftedLognormal, shift));
+    } else {
+        vol.linkTo(boost::make_shared<ConstantSwaptionVolatility>(
+            refDate, TARGET(), ModifiedFollowing,
+            Handle<Quote>(boost::make_shared<SimpleQuote>(sigma)),
+            Actual365Fixed(), Normal));
+    }
 
     Date payDate(30, October, 2025);
     Date fixDate(30, October, 2024);
@@ -36,8 +54,7 @@ int main() {
 
     boost::shared_ptr<CappedFlooredCmsSpreadCoupon> spreadCoupon =
         boost::make_shared<CappedFlooredCmsSpreadCoupon>(
-            payDate, 1.0, fixDate, payDate, 0, cms10y_2y, 1.0, 0.0,
-            Null<Rate>(), 0.0025);
+            payDate, 1.0, fixDate, payDate, 0, cms10y_2y, 1.0, 0.0, cap, floor);
     boost::shared_ptr<StrippedCappedFlooredCoupon> spreadFloor =
         boost::make_shared<StrippedCappedFlooredCoupon>(spreadCoupon);
 
@@ -46,9 +63,10 @@ int main() {
     boost::shared_ptr<CmsCouponPricer> cmsPricer =
         boost::make_shared<LinearTsrPricer>(
             vol, reversion, Handle<YieldTermStructure>(),
-            LinearTsrPricer::Settings().withRateBound(0.0001, 2.000));
+            LinearTsrPricer::Settings().withRateBound(
+                normal != 0 ? -2.000 : 0.0001, 2.000));
 
-    Handle<Quote> correlation(boost::make_shared<SimpleQuote>(0.8));
+    Handle<Quote> correlation(boost::make_shared<SimpleQuote>(rho));
 
     boost::shared_ptr<LognormalCmsSpreadPricer> cmsSpreadPricer =
         boost::make_shared<LognormalCmsSpreadPricer>(
@@ -63,9 +81,14 @@ int main() {
     std::cout << "10y rate " << cms10yCoupon->indexFixing() << " adjusted "
               << cms10yCoupon->adjustedFixing() << std::endl;
 
+    std::cout << "sigma=" << sigma << " normal=" << normal << " shift=" << shift
+              << " rho=" << rho << " cap=" << cap << " floor=" << floor
+              << std::endl;
+
     spreadFloor->setPricer(cmsSpreadPricer);
 
-    std::cout << "spread coupon rate " << spreadFloor->adjustedFixing() << std::endl;
+    std::cout << "spread coupon rate " << spreadFloor->adjustedFixing()
+              << std::endl;
 
     return 0;
 }
