@@ -232,7 +232,7 @@ namespace QuantLib {
 		QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
 	}
 
-    std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
+    std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     SpreadFittingMethod::clone() const {
         return std::auto_ptr<FittedBondDiscountCurve::FittingMethod>(
                                           new SpreadFittingMethod(*this));

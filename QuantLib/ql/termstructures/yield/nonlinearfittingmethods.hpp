@@ -70,15 +70,10 @@ namespace QuantLib {
     class NelsonSiegelFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-<<<<<<< HEAD
-        NelsonSiegelFitting();
-        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-=======
         NelsonSiegelFitting(const Array& weights = Array(),
                             boost::shared_ptr<OptimizationMethod> optimizationMethod
                                           = boost::shared_ptr<OptimizationMethod>());
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
->>>>>>> removeLeftovers20151111
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -100,15 +95,10 @@ namespace QuantLib {
     class SvenssonFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-<<<<<<< HEAD
-        SvenssonFitting();
-        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-=======
         SvenssonFitting(const Array& weights = Array(),
                         boost::shared_ptr<OptimizationMethod> optimizationMethod
                                = boost::shared_ptr<OptimizationMethod>());
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
->>>>>>> removeLeftovers20151111
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -169,16 +159,11 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SimplePolynomialFitting(Natural degree,
-<<<<<<< HEAD
-                                bool constrainAtZero = true);
-        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-=======
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
                                 boost::shared_ptr<OptimizationMethod> optimizationMethod
                                        = boost::shared_ptr<OptimizationMethod>());
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
->>>>>>> removeLeftovers20151111
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -194,7 +179,7 @@ namespace QuantLib {
       public:
          SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve);
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
 	protected:
 		void init();
 	  private:
