@@ -157,6 +157,7 @@ BROWSE
 
 # emacs temporary files
 \#*\#
+.\#*
 
 # Outputs
 QuantLib/Examples/AdjointSwapDeltas/AdjointSwapDeltas
