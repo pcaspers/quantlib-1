@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/math/bspline.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +46,10 @@ namespace QuantLib {
     class ExponentialSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        ExponentialSplinesFitting(bool constrainAtZero = true);
+        ExponentialSplinesFitting(bool constrainAtZero = true,
+                                  const Array& weights = Array(),
+                                  boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                          = boost::shared_ptr<OptimizationMethod>());
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
@@ -66,8 +70,15 @@ namespace QuantLib {
     class NelsonSiegelFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
+<<<<<<< HEAD
         NelsonSiegelFitting();
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+=======
+        NelsonSiegelFitting(const Array& weights = Array(),
+                            boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                          = boost::shared_ptr<OptimizationMethod>());
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+>>>>>>> removeLeftovers20151111
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -89,8 +100,15 @@ namespace QuantLib {
     class SvenssonFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
+<<<<<<< HEAD
         SvenssonFitting();
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+=======
+        SvenssonFitting(const Array& weights = Array(),
+                        boost::shared_ptr<OptimizationMethod> optimizationMethod
+                               = boost::shared_ptr<OptimizationMethod>());
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+>>>>>>> removeLeftovers20151111
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
@@ -120,7 +138,10 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
-                             bool constrainAtZero = true);
+                             bool constrainAtZero = true,
+                             const Array& weights = Array(),
+                             boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                     = boost::shared_ptr<OptimizationMethod>());
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
@@ -148,14 +169,44 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SimplePolynomialFitting(Natural degree,
+<<<<<<< HEAD
                                 bool constrainAtZero = true);
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+=======
+                                bool constrainAtZero = true,
+                                const Array& weights = Array(),
+                                boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                       = boost::shared_ptr<OptimizationMethod>());
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+>>>>>>> removeLeftovers20151111
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
         Size size_;
     };
 
+
+    //! Spread fitting method helper
+    /*  Fits a spread curve on top of a discount function according to given parametric method
+    */
+    class SpreadFittingMethod
+        : public FittedBondDiscountCurve::FittingMethod {
+      public:
+         SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
+                        Handle<YieldTermStructure> discountCurve);
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+	protected:
+		void init();
+	  private:
+        Size size() const;
+        DiscountFactor discountFunction(const Array& x, Time t) const;
+		// underlying parametric method
+		boost::shared_ptr<FittingMethod> method_;
+        // adjustment in case underlying discount curve has different reference date
+        DiscountFactor rebase_;
+        // discount curve from on top of which the spread will be calculated
+        Handle<YieldTermStructure> discountingCurve_;
+    };
 }
 
 
