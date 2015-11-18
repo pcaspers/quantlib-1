@@ -192,6 +192,7 @@ QuantLib/Examples/cmsso
 QuantLib/Examples/crosscurrencylgm
 QuantLib/Examples/fxtarf
 QuantLib/Examples/fxtarf_simple
+QuantLib/Examples/laplaceinterpolation
 QuantLib/Examples/lgmswaption
 QuantLib/Examples/smiledyn
 QuantLib/Examples/timingadj
