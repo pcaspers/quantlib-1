@@ -55,6 +55,10 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
 
     Size m = A.rows();
     Size n = A.columns();
+
+    QL_REQUIRE(n > 1 && m > 1, "matrix (" << m << "," << n
+                                          << ") must at least be 2x2");
+
     SparseMatrix g(m * n, m * n, 5 * m * n);
     Array rhs(m * n), guess(m * n);
     Real guessTmp = 0.0;
