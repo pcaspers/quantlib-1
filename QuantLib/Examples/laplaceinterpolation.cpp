@@ -24,14 +24,10 @@ int main() {
         }
     }
 
-    // std::cout << "Original Matrix:" << sample.size1() << "x" <<
-    // sample.size2() << std::endl;
-    // std::cout << sample << std::endl;
-
-    MersenneTwisterUniformRng mt(42);
-
     Matrix sample2(sample), del(N, N);
 
+    // delete random points
+    MersenneTwisterUniformRng mt(42);
     for (Size l = 0; l < (N * N * delPerc); ++l) {
         Size i = static_cast<Size>(mt.nextReal() * N);
         Size j = static_cast<Size>(mt.nextReal() * N);
@@ -43,12 +39,15 @@ int main() {
         }
     }
 
-    // std::cout << "Randomly erased points:" << std::endl;
-    // std::cout << sample << std::endl;
+    // delete whole cols
+    // for(Size i=0;i<sample2.rows();++i) {
+    //     for(Size j= (N-delPerc*N)/2.0; j<=(N+delPerc*N)/2.0;++j) {
+    //         sample2[i][j] = Null<Real>();
+    //         del[i][j] = 1;
+    //     }
+    // }
 
-    // std::cout << "Reconstructed matrix:" << std::endl;
     laplaceInterpolation(sample2, 1E-6);
-    // std::cout << sample << std::endl;
 
     for (Size i = 0; i < N; ++i) {
         for (Size j = 0; j < N; ++j) {
