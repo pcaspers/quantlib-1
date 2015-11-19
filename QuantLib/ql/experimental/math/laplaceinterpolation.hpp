@@ -31,9 +31,6 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-// only debug
-#include <ql/math/matrixutilities/svd.hpp>
-
 namespace QuantLib {
 
 namespace {
@@ -58,7 +55,6 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
 
     Size m = A.rows();
     Size n = A.columns();
-    // Matrix g(m*n, m*n); // debug
     SparseMatrix g(m * n, m * n, 5 * m * n);
     Array rhs(m * n), guess(m * n);
     Real guessTmp = 0.0;
@@ -150,12 +146,6 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
             ++l;
         }
     }
-
-    // debug
-    // std::cout << "gls:" << std::endl << g << " rhs=" << rhs <<
-    // std::endl;
-    // std::cout << "solution: " << SVD(g).solveFor(rhs) << std::endl;
-    // std::cout << "guess = " << guess << std::endl;
 
     // solve the equation
     Array s = BiCGstab(boost::bind(&f_A, g, _1), 10 * m * n, relTol)
