@@ -47,8 +47,8 @@ Disposable<Array> pre(const Array &b) {
 } // namespace
 
 /*! reference: Numerical Recipes, 3rd edition, ch. 3.8
-    two dimensonal interpolation of missing (i.e. null)
-    values using the laplace method assuming an
+    two dimensonal reconstruction of missing (i.e. null)
+    values using laplace interpolation assuming an
     equidistant grid */
 
 template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
