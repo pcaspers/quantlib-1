@@ -27,25 +27,33 @@ int main() {
     Matrix sample2(sample), del(N, N);
 
     // delete random points
-    MersenneTwisterUniformRng mt(42);
-    for (Size l = 0; l < (N * N * delPerc); ++l) {
-        Size i = static_cast<Size>(mt.nextReal() * N);
-        Size j = static_cast<Size>(mt.nextReal() * N);
-        if (sample2[i][j] != Null<Real>()) {
-            sample2[i][j] = Null<Real>();
-            del[i][j] = 1;
-        } else {
-            --l;
-        }
-    }
+    // MersenneTwisterUniformRng mt(42);
+    // for (Size l = 0; l < (N * N * delPerc); ++l) {
+    //     Size i = static_cast<Size>(mt.nextReal() * N);
+    //     Size j = static_cast<Size>(mt.nextReal() * N);
+    //     if (sample2[i][j] != Null<Real>()) {
+    //         sample2[i][j] = Null<Real>();
+    //         del[i][j] = 1;
+    //     } else {
+    //         --l;
+    //     }
+    // }
 
-    // delete whole cols
+    // delete cols (starting at center)
     // for(Size i=0;i<sample2.rows();++i) {
     //     for(Size j= (N-delPerc*N)/2.0; j<=(N+delPerc*N)/2.0;++j) {
     //         sample2[i][j] = Null<Real>();
     //         del[i][j] = 1;
     //     }
     // }
+
+    // delete cols (on right side)
+    for (Size i = 0; i < sample2.rows(); ++i) {
+        for (Size j = (N - delPerc * N); j < N; ++j) {
+            sample2[i][j] = Null<Real>();
+            del[i][j] = 1;
+        }
+    }
 
     laplaceInterpolation(sample2, 1E-6);
 
