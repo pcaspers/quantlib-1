@@ -13,7 +13,7 @@ unset ytics
 unset border
 unset key
 unset colorbox
-splot 'laplaceinterpolation.dat' u 1:2:3 w p pt 5 ps 3 palette # reconstructued
+splot 'laplaceinterpolation.dat' u 1:2:3 w p pt 5 ps 3 palette # original
 splot 'laplaceinterpolation.dat' u 1:2:($5==1?-1:$3) w p pt 5 ps 3 palette # destructed
 splot 'laplaceinterpolation.dat' u 1:2:4 w p pt 5 ps 3 palette # reconstructued
 
