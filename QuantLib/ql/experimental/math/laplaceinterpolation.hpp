@@ -39,11 +39,6 @@ Disposable<Array> f_A(const SparseMatrix &g, const Array &x) {
     return prod(g, x);
 };
 
-Disposable<Array> pre(const Array &b) {
-    Array tmp = b;
-    return tmp;
-};
-
 } // namespace
 
 /*! reference: Numerical Recipes, 3rd edition, ch. 3.8
@@ -151,7 +146,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
         }
     }
 
-    // solve the equation
+    // solve the equation (preconditioner is identiy)
     Array s = BiCGstab(boost::bind(&f_A, g, _1), 10 * m * n, relTol)
                   .solve(rhs, guess)
                   .x;
