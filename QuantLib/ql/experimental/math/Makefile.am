@@ -13,6 +13,7 @@ this_include_HEADERS = \
     gaussiancopulapolicy.hpp \
     inversecumulativerng_multithreaded.hpp \
     inversecumulativersg_multithreaded.hpp \
+    laplaceinterpolation.hpp \
     latentmodel.hpp \
     mersennetwister_multithreaded.hpp \
     multidimintegrator.hpp \

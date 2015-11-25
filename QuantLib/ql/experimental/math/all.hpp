@@ -10,6 +10,7 @@
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/inversecumulativerng_multithreaded.hpp>
 #include <ql/experimental/math/inversecumulativersg_multithreaded.hpp>
+#include <ql/experimental/math/laplaceinterpolation.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
 #include <ql/experimental/math/mersennetwister_multithreaded.hpp>
 #include <ql/experimental/math/multidimintegrator.hpp>
