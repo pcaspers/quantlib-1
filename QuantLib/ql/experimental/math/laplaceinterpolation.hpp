@@ -55,7 +55,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
                                           << ") must at least be 2x2");
 
     SparseMatrix g(m * n, m * n, 5 * m * n);
-    Array rhs(m * n), guess(m * n);
+    Array rhs(m * n, 0.0), guess(m * n, 0.0);
     Real guessTmp = 0.0;
     Size i1, i2, i3, i4, j1, j2, j3, j4;
     bool inner;
@@ -137,6 +137,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
                     g(l, i1 * n + j1) = -0.5;
                     g(l, i2 * n + j2) = -0.5;
                 }
+                rhs[l] = 0.0;
                 guess[l] = guessTmp;
             } else {
                 rhs[l] = A[i][j];
