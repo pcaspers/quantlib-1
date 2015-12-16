@@ -40,6 +40,10 @@ namespace QuantLib {
         \todo check if the class works properly if the term structure's
         date moves; in particular if it moves after the first step
         date
+
+        \todo check if the different observables should trigger more
+        specific actions to make the class more performant (like
+        it was done in the GSR model)
     */
 
     /*! The model requires a suitable input smile which means it should be

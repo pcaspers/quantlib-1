@@ -221,14 +221,10 @@ void Gsr::initialize(Real T) {
                        adjuster_.params(), T, termStructure()->referenceDate(),
                        termStructure()->dayCounter()));
 
-    registerWith(termStructure());
-
-    registerWith(stateProcess_);
-    registerWith(adjustedStateProcess_);
-
     volatilityObserver_ = boost::make_shared<VolatilityObserver>(this);
     reversionObserver_ = boost::make_shared<ReversionObserver>(this);
     adjusterObserver_ = boost::make_shared<AdjusterObserver>(this);
+    termStructureObserver_ = boost::make_shared<TermStructureObserver>(this);
 
     for (Size i = 0; i < reversions_.size(); ++i)
         reversionObserver_->registerWith(reversions_[i]);
@@ -238,6 +234,14 @@ void Gsr::initialize(Real T) {
 
     for (Size i = 0; i < adjusters_.size(); ++i)
         adjusterObserver_->registerWith(adjusters_[i]);
+
+    // recompute times and flush process cache when
+    // reference date changes or forward measure time
+    // in process changes (for the latter recomputation
+    // of times wouldn't be necessary, but anyway)
+    termStructureObserver_->registerWith(termStructure());
+    termStructureObserver_->registerWith(stateProcess_);
+    termStructureObserver_->registerWith(adjustedStateProcess_);
 }
 
 const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,

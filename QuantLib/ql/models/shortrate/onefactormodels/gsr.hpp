@@ -177,7 +177,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         }
     }
 
-    // Calibrate the adjsuters one by one to the given helpers.
+    // Calibrate the adjusters one by one to the given helpers.
     // As for the iterative volatility calibration the step
     // dates should be chosen according to the fixing dates
     // of the coupon to adjust the model to.
@@ -214,7 +214,6 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
     void performCalculations() const {
         Gaussian1dModel::performCalculations();
-        updateTimes();
     }
 
   private:
@@ -254,10 +253,16 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         void update() { p_->updateAdjuster(); }
         Gsr *p_;
     };
+    struct TermstructureObserver : public Observer {
+        TermstructureObserver(Gsr *p) : p_(p) {}
+        void update() { p_->updateTimes(); }
+        Gsr *p_;
+    };
 
     boost::shared_ptr<VolatilityObserver> volatilityObserver_;
     boost::shared_ptr<ReversionObserver> reversionObserver_;
     boost::shared_ptr<AdjusterObserver> adjusterObserver_;
+    boost::shared_ptr<TermStructureObserver> termStructureObserver_;
 };
 
 inline const Real Gsr::numeraireTime() const {
