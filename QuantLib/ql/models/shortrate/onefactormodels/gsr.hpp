@@ -253,8 +253,8 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         void update() { p_->updateAdjuster(); }
         Gsr *p_;
     };
-    struct TermstructureObserver : public Observer {
-        TermstructureObserver(Gsr *p) : p_(p) {}
+    struct TermStructureObserver : public Observer {
+        TermStructureObserver(Gsr *p) : p_(p) {}
         void update() { p_->updateTimes(); }
         Gsr *p_;
     };
