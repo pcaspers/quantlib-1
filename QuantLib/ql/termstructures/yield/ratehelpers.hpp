@@ -358,7 +358,7 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over Fx Swap rates
     /*! fwdFx = spotFx + fwdPoint
         isFxBaseCurrencyCollateralCurrency indicates if the base currency
-        of the fx currency pair is the one used as collateral 
+        of the fx currency pair is the one used as collateral
     */
     class FxSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -369,7 +369,7 @@ namespace QuantLib {
                          const Calendar& calendar,
                          BusinessDayConvention convention,
                          bool endOfMonth,
-                         bool isFxBaseCurrencyCollateralCurrency,                   
+                         bool isFxBaseCurrencyCollateralCurrency,
                          const Handle<YieldTermStructure>& collateralCurve);
         //! \name RateHelper interface
         //@{
