@@ -1,3 +1,5 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
  Copyright (C) 2014 Peter Caspers
 
@@ -13,7 +15,8 @@
 
  This program is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+*/
 
 /*! \file cmsspreadcoupon.hpp
     \brief CMS spread coupon
